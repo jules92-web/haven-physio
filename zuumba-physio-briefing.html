@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zuumba — Physio Briefing</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f1ea;
+    --card: #fffdf7;
+    --ink: #1a1e1a;
+    --ink-light: #4a5548;
+    --ink-faint: #8a9688;
+    --accent: #c8882a;
+    --accent-soft: #f0e6d8;
+    --ashram: #7b3f00;
+    --ashram-bg: #fff3e0;
+    --ashram-border: #e6a85a;
+    --green: #2d6a4f;
+    --green-bg: #d8f3dc;
+    --amber: #b5830a;
+    --amber-bg: #fef9e7;
+    --red-bg: #fde8e8;
+    --red: #c0392b;
+    --border: #dce8dc;
+    --shadow: 0 2px 16px rgba(26,30,26,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .header {
+    background: #271810;
+    color: #f0faf0;
+    padding: 48px 40px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 320px; height: 320px;
+    border-radius: 50%;
+    background: rgba(200,136,42,0.2);
+    pointer-events: none;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: 30%;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: rgba(200,136,42,0.08);
+    pointer-events: none;
+  }
+  .header-meta {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #e8b878;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 5vw, 48px);
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+  .header-sub { color: #b09878; font-size: 13px; }
+
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    padding: 28px 40px;
+    background: #271810;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .stat {
+    background: rgba(255,255,255,0.06);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .stat-label {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a7058;
+    margin-bottom: 4px;
+  }
+  .stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    color: #f0faf0;
+    font-weight: 600;
+  }
+
+  .content {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  .ashram-banner {
+    background: var(--ashram-bg);
+    border: 1.5px solid var(--ashram-border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 36px;
+  }
+  .ashram-banner-title {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ashram);
+    font-weight: 600;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .ashram-banner-title::before { content: '🪔'; font-size: 14px; }
+  .ashram-item {
+    font-size: 13.5px;
+    color: var(--ashram);
+    font-weight: 500;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(196,92,26,0.15);
+    line-height: 1.5;
+  }
+  .ashram-item:last-child { border-bottom: none; }
+
+  .section { margin-bottom: 40px; }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-icon {
+    width: 28px; height: 28px;
+    background: var(--accent-soft);
+    border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow);
+  }
+  .card-title {
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+
+  .blist { list-style: none; }
+  .blist li {
+    font-size: 14px;
+    color: var(--ink-light);
+    padding: 5px 0 5px 18px;
+    position: relative;
+    line-height: 1.55;
+    border-bottom: 1px solid var(--border);
+  }
+  .blist li:last-child { border-bottom: none; }
+  .blist li::before {
+    content: '→';
+    position: absolute; left: 0;
+    color: var(--accent);
+    font-size: 12px;
+    top: 7px;
+  }
+  .blist li strong { color: var(--ink); font-weight: 600; }
+
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before {
+    content: '';
+    position: absolute; left: 8px; top: 6px; bottom: 6px;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--accent), var(--border));
+    border-radius: 2px;
+  }
+  .tl-item { position: relative; margin-bottom: 20px; }
+  .tl-item::before {
+    content: '';
+    position: absolute;
+    left: -24px; top: 5px;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg);
+    box-shadow: 0 0 0 2px var(--accent);
+  }
+  .tl-item.milestone::before { background: #2d6a4f; box-shadow: 0 0 0 2px #2d6a4f; }
+  .tl-item.warning::before { background: var(--amber); box-shadow: 0 0 0 2px var(--amber); }
+  .tl-item.cancelled::before { background: var(--red); box-shadow: 0 0 0 2px var(--red); }
+  .tl-date {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 3px;
+  }
+  .tl-item.milestone .tl-date { color: #2d6a4f; }
+  .tl-item.warning .tl-date { color: var(--amber); }
+  .tl-item.cancelled .tl-date { color: var(--red); }
+  .tl-title { font-size: 14px; font-weight: 600; color: var(--ink); margin-bottom: 3px; }
+  .tl-body { font-size: 13px; color: var(--ink-light); line-height: 1.5; }
+
+  .proto-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  .proto-table th {
+    background: #271810;
+    color: #f0faf0;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding: 10px 14px;
+    text-align: left;
+  }
+  .proto-table th:first-child { border-radius: 8px 0 0 0; }
+  .proto-table th:last-child { border-radius: 0 8px 0 0; }
+  .proto-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--ink-light);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  .proto-table tr:last-child td { border-bottom: none; }
+  .proto-table tr:nth-child(even) td { background: #faf8f3; }
+  .proto-table td strong { color: var(--ink); }
+
+  .status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+  }
+  .status-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .status-label {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .status-val { font-size: 13.5px; color: var(--ink); font-weight: 500; line-height: 1.4; }
+  .badge {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  .badge-amber { background: var(--amber-bg); color: var(--amber); }
+  .badge-green { background: var(--green-bg); color: var(--green); }
+  .badge-red { background: var(--red-bg); color: var(--red); }
+
+  /* Phase cards for physio plan */
+  .phases { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 12px; }
+  .phase-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .phase-header {
+    background: var(--accent);
+    color: white;
+    padding: 10px 16px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .phase-body { padding: 14px 16px; }
+  .phase-body li {
+    font-size: 13px;
+    color: var(--ink-light);
+    padding: 3px 0 3px 14px;
+    position: relative;
+    line-height: 1.45;
+  }
+  .phase-body li::before {
+    content: '·';
+    position: absolute; left: 2px;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .phase-body { list-style: none; }
+
+  .open-q {
+    background: var(--amber-bg);
+    border: 1px solid #f0d080;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 8px;
+    font-size: 13.5px;
+    color: var(--ink);
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    line-height: 1.5;
+  }
+  .open-q::before { content: '?'; font-weight: 700; color: var(--amber); flex-shrink: 0; }
+
+  .warning-box {
+    background: #fff8e8;
+    border: 1.5px solid #f0c060;
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 10px;
+    font-size: 13.5px;
+    color: #5a4010;
+    line-height: 1.5;
+  }
+  .warning-box strong { color: #3a2800; }
+
+  .footer {
+    text-align: center;
+    padding: 32px 24px;
+    font-size: 12px;
+    color: var(--ink-faint);
+    border-top: 1px solid var(--border);
+  }
+
+  @media (max-width: 600px) {
+    .header, .stats-row { padding-left: 20px; padding-right: 20px; }
+    .content { padding: 28px 16px 60px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-meta">Paws in Wayanad — Physio Briefing</div>
+  <h1>Zuumba</h1>
+  <div class="header-sub">Chat period: March – April 2026 &nbsp;·&nbsp; For physiotherapy team use only</div>
+</div>
+
+<div class="stats-row">
+  <div class="stat"><div class="stat-label">Sex</div><div class="stat-value">Female</div></div>
+  <div class="stat"><div class="stat-label">Age</div><div class="stat-value">~1 year old</div></div>
+  <div class="stat"><div class="stat-label">Weight</div><div class="stat-value">15.2 kg</div></div>
+  <div class="stat"><div class="stat-label">Injury</div><div class="stat-value">Spinal compression</div></div>
+  <div class="stat"><div class="stat-label">Surgery</div><div class="stat-value">None needed</div></div>
+  <div class="stat"><div class="stat-label">Prognosis</div><div class="stat-value">Early recovery</div></div>
+</div>
+
+<div class="content">
+
+  <!-- ASHRAM GUIDANCE -->
+  <div class="ashram-banner">
+    <div class="ashram-banner-title">From the Ashram / Uma & Tom's Guidance</div>
+    <div class="ashram-item"><strong>Uma (Mar 31, 2026):</strong> "You can start with physio, PROM and hydrotherapy. See how she responds." — Initial physio directive for conservative management.</div>
+    <div class="ashram-item"><strong>Tom (Mar 30, 2026):</strong> Prescribed: Amoxclav 300mg twice daily 14 days, B complex injection 5 days then syrup 1 month, probiotics 1 month, Pantoprazole 15mg daily 2 weeks.</div>
+    <div class="ashram-item"><strong>Uma (Mar 26, 2026):</strong> "Xray should be taken to assess bone condition. Check for 2–3 days. If no diarrhoea or fever and eating well and active, Rabies could be given first."</div>
+    <div class="ashram-item"><strong>Uma (Mar 26, 2026):</strong> "Pinch reflexes will show whether cord is severed." — emphasis on neurological assessment to guide prognosis.</div>
+  </div>
+
+  <!-- DIAGNOSIS -->
+  <div class="section">
+    <div class="section-title"><span class="section-icon">🦴</span> Diagnosis & Injury</div>
+    <div class="card">
+      <div class="card-title">Bike accident — spinal compression, hind leg paralysis</div>
+      <ul class="blist">
+        <li><strong>Injury date:</strong> Approximately late February 2026. Bike accident.</li>
+        <li><strong>Presentation:</strong> Hind leg paralysis. Dragging front legs to move. Found by owner at home.</li>
+        <li><strong>History:</strong> Had been kept in a shop after injury. Owner left town for medical reasons.</li>
+        <li><strong>Initial assessment (Mar 22, 2026):</strong> Assessed by Tieme and Vipin. Pinch test: NO pain response from either hind leg (concerning finding).</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Clinical assessment & diagnostic findings</div>
+      <ul class="blist">
+        <li><strong>Dr Jishnu (Vadakara, March 29, 2026):</strong> Minor spinal compression. No surgery needed. Physio and aqua therapy sufficient.</li>
+        <li><strong>Important finding:</strong> Shows pain response in hind legs (contradicts initial field assessment by ~1 week). This suggests possible improvement or initial shock masking pain sensation.</li>
+        <li><strong>CBC (March 29):</strong> Indicates infection — Amoxclav started to address this.</li>
+        <li><strong>Urine assessment:</strong> Dehydration likely (concentrated urine). No structural urinary issues identified.</li>
+        <li><strong>Weight:</strong> 16.1 kg (field assessment), 15.2 kg (clinic scale, March 29) — within normal range for young adult female.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="section">
+    <div class="section-title"><span class="section-icon">📅</span> Key History</div>
+    <div class="card">
+      <div class="timeline">
+
+        <div class="tl-item warning">
+          <div class="tl-date">Late February 2026</div>
+          <div class="tl-title">Bike accident — hind leg paralysis onset</div>
+          <div class="tl-body">Approximate injury date. Hind leg paralysis. Dragging front legs to move.</div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-date">March 22, 2026</div>
+          <div class="tl-title">First assessment by Paws team (Tieme & Vipin)</div>
+          <div class="tl-body">Initial evaluation. Pinch test: no pain response from either hind leg — concerning neurological finding at this stage.</div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-date">March 25, 2026</div>
+          <div class="tl-title">Collected and brought to Haven</div>
+          <div class="tl-body">Super friendly despite fear and paralysis. Eating kibbles and egg well. Initial response to care very positive.</div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-date">March 26, 2026</div>
+          <div class="tl-title">Named Zuumba — initial protocols started</div>
+          <div class="tl-body">Named Zuumba. Uma directs: start B complex injections immediately, assessment spot on fine, X-ray needed to assess bone condition.</div>
+        </div>
+
+        <div class="tl-item milestone">
+          <div class="tl-date">March 29, 2026</div>
+          <div class="tl-title">Vadakara clinic assessment — Dr Jishnu</div>
+          <div class="tl-body">Minor spinal compression confirmed. No surgery needed. Physio + aqua therapy prescribed as sufficient treatment. IMPORTANT: Pain response NOW present in legs (improvement from initial assessment). CBC shows infection. Weight 15.2 kg.</div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-date">March 30, 2026</div>
+          <div class="tl-title">Tom prescribes medication protocol</div>
+          <div class="tl-body">Amoxclav 300mg twice daily 14 days, B complex injection 5 days then syrup 1 month, probiotics 1 month, Pantoprazole 15mg daily 2 weeks — comprehensive protocol to address infection and support recovery.</div>
+        </div>
+
+        <div class="tl-item milestone">
+          <div class="tl-date">March 31, 2026</div>
+          <div class="tl-title">Uma directs physio start — PROM & hydrotherapy</div>
+          <div class="tl-body">"You can start with physio, PROM and hydrotherapy. See how she responds." — Conservative management approved.</div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-date">April 5, 2026</div>
+          <div class="tl-title">B complex syrup started (oral phase)</div>
+          <div class="tl-body">5 IM injections completed. Now transitioning to oral syrup continuation for 1 month total.</div>
+        </div>
+
+        <div class="tl-item milestone">
+          <div class="tl-date">April 6, 2026</div>
+          <div class="tl-title">Physio twice daily — comprehensive protocol begins</div>
+          <div class="tl-body">Helis implementing: brushing under paws, PROM 5 min both limbs, assisted standing. Systematic daily rehabilitation started.</div>
+        </div>
+
+        <div class="tl-item milestone">
+          <div class="tl-date">April 11, 2026</div>
+          <div class="tl-title">Reflexes present — POSITIVE NEUROLOGICAL SIGN</div>
+          <div class="tl-body">TAIL REFLEX PRESENT ✓. Paw reflexes also present ✓. This is a strong positive sign — cord is NOT fully severed.</div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-date">April 19, 2026</div>
+          <div class="tl-title">Weight stable; Rabies vaccine given; bladder progress</div>
+          <div class="tl-body">Weight 15.2 kg (stable). Rabies vaccine administered. Peeing with some help (lifting). Consistent bladder management since arrival.</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- PHYSIO PLAN -->
+  <div class="section">
+    <div class="section-title"><span class="section-icon">📋</span> Prescribed Physio Plan (Uma directive + Helis implementing)</div>
+
+    <div class="card" style="padding:0;overflow:hidden;">
+      <table class="proto-table">
+        <thead>
+          <tr>
+            <th>Exercise</th>
+            <th>Frequency</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Paw brushing (sensory stimulation)</strong></td>
+            <td>2× daily</td>
+            <td>Brush/soft bristles under paw pads. Activates sensory-motor pathways. Simple but critical for neurological reactivation.</td>
+          </tr>
+          <tr>
+            <td><strong>PROM (hind limbs)</strong></td>
+            <td>2× daily, 5 min each limb</td>
+            <td>Gentle cycling movements. Note any response or resistance. Document improvement in range and responsiveness.</td>
+          </tr>
+          <tr>
+            <td><strong>Assisted standing</strong></td>
+            <td>At meals (when ready)</td>
+            <td>She doesn't eat during standing yet — normal at this early stage. Try treats for motivation. Build strength gradually before meal-time standing.</td>
+          </tr>
+          <tr>
+            <td><strong>Sling-assisted pottying</strong></td>
+            <td>Every outing</td>
+            <td>Sling under belly. Correct hind leg position during elimination. This also acts as assisted standing practice and builds confidence.</td>
+          </tr>
+          <tr>
+            <td><strong>Aqua therapy (swimming)</strong></td>
+            <td>Prescribed — pending pool access</td>
+            <td>Dr Jishnu and Uma directive. HIGH PRIORITY. Not yet implemented — pool access needed. Critical for buoyancy-assisted strengthening.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- CURRENT STATUS -->
+  <div class="section">
+    <div class="section-title"><span class="section-icon">📊</span> Current Status (April 2026)</div>
+    <div class="status-grid">
+      <div class="status-item">
+        <div class="status-label">Walking</div>
+        <div class="status-val"><span class="badge badge-amber">None independent</span><br><small style="color:var(--ink-faint);font-size:12px;">Drags with front legs only</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Standing</div>
+        <div class="status-val"><span class="badge badge-amber">Assisted only</span><br><small style="color:var(--ink-faint);font-size:12px;">With sling support</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Hind limbs</div>
+        <div class="status-val"><span class="badge badge-amber">No independent movement</span><br><small style="color:var(--ink-faint);font-size:12px;">Some motion when lifted</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Reflexes</div>
+        <div class="status-val"><span class="badge badge-green">Present ✓</span><br><small style="color:var(--ink-faint);font-size:12px;">Tail & paw reflexes confirmed Apr 11</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Deep pain sensation</div>
+        <div class="status-val"><span class="badge badge-green">Present ✓</span><br><small style="color:var(--ink-faint);font-size:12px;">Dr Jishnu confirmed; no cord severance</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Bladder</div>
+        <div class="status-val"><span class="badge badge-amber">Requires help</span><br><small style="color:var(--ink-faint);font-size:12px;">Peeing with lifting; consistent since arrival</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Bowel</div>
+        <div class="status-val"><span class="badge badge-green">Solid stool, no diarrhoea</span><br><small style="color:var(--ink-faint);font-size:12px;">Regular elimination; healthy</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Mood & temperament</div>
+        <div class="status-val"><span class="badge badge-green">Super friendly</span><br><small style="color:var(--ink-faint);font-size:12px;">Very affectionate; eats & drinks well; great patient</small></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KEY CONSIDERATIONS -->
+  <div class="section">
+    <div class="section-title"><span class="section-icon">⚠️</span> Key Considerations for Physio</div>
+
+    <div class="warning-box">
+      <strong>Reflexes and deep pain PRESENT:</strong> Tail reflex and paw reflexes confirmed April 11. Deep pain sensation present per Dr Jishnu. This is a STRONG positive sign — spinal cord is NOT fully severed. Prognosis for recovery is much better than initial field assessment suggested.
+    </div>
+
+    <div class="card">
+      <div class="card-title">Early neurological recovery — optimistic signs</div>
+      <ul class="blist">
+        <li>Reflexes present and palpable (Apr 11) — indicates nerve pathway integrity.</li>
+        <li>Deep pain sensation confirmed — not a complete transection.</li>
+        <li>Progress from NO pain response (Mar 22) to pain response present (Mar 29) suggests neurological improvement within first week.</li>
+        <li>Early days in care (late March 2026) — much potential for continued improvement.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Environment & surface — critical for her safety</div>
+      <ul class="blist">
+        <li><strong>Non-slip mat in room is ESSENTIAL:</strong> slippery floors make it impossible for her to help herself. Prevents independent movement attempts.</li>
+        <li>Provide textured, grippy surfaces for scooting and movement practice.</li>
+        <li>She uses front legs to drag — protect these from friction and ensure comfortable dragging surfaces.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Standing & feeding progression</div>
+      <ul class="blist">
+        <li>She doesn't like to eat while standing yet — this is normal and expected at this stage of paralysis recovery.</li>
+        <li>Use <strong>treats</strong> (not full meals) for motivation during standing practice — builds positive association without risk of bloating.</li>
+        <li>As strength builds, gradually introduce food-motivated standing at meal times.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Temperament & handling — a huge advantage</div>
+      <ul class="blist">
+        <li><strong>Super friendly and people-oriented:</strong> makes an excellent physio patient. Use this to your advantage.</li>
+        <li>She is very affectionate and engaged — excellent for building confidence and cooperation during sessions.</li>
+        <li>She eats and drinks well — use food motivation strategically for exercises.</li>
+        <li>Minimal pain behavioural issues expected — her temperament will make sessions manageable.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Hydrotherapy — HIGHEST PRIORITY pending intervention</div>
+      <ul class="blist">
+        <li><strong>Dr Jishnu and Uma both prescribed aqua therapy as essential next step.</strong></li>
+        <li>Water provides buoyancy, reduces weight-bearing stress, allows hind limb activation in supportive environment.</li>
+        <li>Swimming is currently the highest-priority missing intervention — advocate for pool access urgently.</li>
+        <li>Could dramatically accelerate neurological reactivation and muscle re-engagement.</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- OPEN QUESTIONS -->
+  <div class="section">
+    <div class="section-title"><span class="section-icon">💬</span> Open Questions</div>
+    <div class="open-q">Aqua therapy implementation: when and where will swimming sessions be arranged? Highest priority pending intervention.</div>
+    <div class="open-q">Infection status: has CBC follow-up been done to confirm Amoxclav course fully resolved the infection?</div>
+    <div class="open-q">Deep pain sensation: formal reassessment after 4–6 weeks of physio recommended to gauge neurological progress.</div>
+    <div class="open-q">Should Bhagavan's guidance be sought on her case given the early stage and potential for recovery? Uma may recommend this.</div>
+    <div class="open-q">Follow-up X-ray timing: when should spinal compression be re-assessed to determine healing and recovery trajectory?</div>
+  </div>
+
+</div>
+
+<div class="footer">
+  Paws in Wayanad — Haven &nbsp;·&nbsp; Generated from WhatsApp group chat export &nbsp;·&nbsp; For internal physio team use
+</div>
+
+</body>
+</html>

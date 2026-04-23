@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gunni — Physio Briefing</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f0eb;
+    --card: #fffdf8;
+    --ink: #1a1e1a;
+    --ink-light: #4a5548;
+    --ink-faint: #8a9688;
+    --accent: #e07030;
+    --accent-soft: #fce4d6;
+    --ashram: #7b3f00;
+    --ashram-bg: #fff3e0;
+    --ashram-border: #e6a85a;
+    --green: #2d6a4f;
+    --green-bg: #d8f3dc;
+    --amber: #b5830a;
+    --amber-bg: #fef9e7;
+    --red-bg: #fde8e8;
+    --red: #c0392b;
+    --border: #e8dcd0;
+    --shadow: 0 2px 16px rgba(26,30,26,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .header {
+    background: #3d1a08;
+    color: #f0faf0;
+    padding: 48px 40px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 320px; height: 320px;
+    border-radius: 50%;
+    background: rgba(224,112,48,0.2);
+    pointer-events: none;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: 30%;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: rgba(224,112,48,0.08);
+    pointer-events: none;
+  }
+  .header-meta {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #d98a5a;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 5vw, 48px);
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+  .header-sub { color: #9a7a6a; font-size: 13px; }
+
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    padding: 28px 40px;
+    background: #3d1a08;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .stat {
+    background: rgba(255,255,255,0.06);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .stat-label {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #9a7a6a;
+    margin-bottom: 4px;
+  }
+  .stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    color: #f0faf0;
+    font-weight: 600;
+  }
+
+  .content {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  .ashram-banner {
+    background: var(--ashram-bg);
+    border: 1.5px solid var(--ashram-border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 36px;
+  }
+  .ashram-banner-title {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ashram);
+    font-weight: 600;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .ashram-banner-title::before { content: '🪔'; font-size: 14px; }
+  .ashram-item {
+    font-size: 13.5px;
+    color: var(--ashram);
+    font-weight: 500;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(196,92,26,0.15);
+    line-height: 1.5;
+  }
+  .ashram-item:last-child { border-bottom: none; }
+
+  .section { margin-bottom: 40px; }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-icon {
+    width: 28px; height: 28px;
+    background: var(--accent-soft);
+    border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow);
+  }
+  .card-title {
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+
+  .blist { list-style: none; }
+  .blist li {
+    font-size: 14px;
+    color: var(--ink-light);
+    padding: 5px 0 5px 18px;
+    position: relative;
+    line-height: 1.55;
+    border-bottom: 1px solid var(--border);
+  }
+  .blist li:last-child { border-bottom: none; }
+  .blist li::before {
+    content: '→';
+    position: absolute; left: 0;
+    color: var(--accent);
+    font-size: 12px;
+    top: 7px;
+  }
+  .blist li strong { color: var(--ink); font-weight: 600; }
+
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before {
+    content: '';
+    position: absolute; left: 8px; top: 6px; bottom: 6px;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--accent), var(--border));
+    border-radius: 2px;
+  }
+  .tl-item { position: relative; margin-bottom: 20px; }
+  .tl-item::before {
+    content: '';
+    position: absolute;
+    left: -24px; top: 5px;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg);
+    box-shadow: 0 0 0 2px var(--accent);
+  }
+  .tl-item.milestone::before { background: #1a7a4a; box-shadow: 0 0 0 2px #1a7a4a; }
+  .tl-item.warning::before { background: var(--amber); box-shadow: 0 0 0 2px var(--amber); }
+  .tl-item.cancelled::before { background: var(--red); box-shadow: 0 0 0 2px var(--red); }
+  .tl-date {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 3px;
+  }
+  .tl-item.milestone .tl-date { color: #1a7a4a; }
+  .tl-item.warning .tl-date { color: var(--amber); }
+  .tl-item.cancelled .tl-date { color: var(--red); }
+  .tl-title { font-size: 14px; font-weight: 600; color: var(--ink); margin-bottom: 3px; }
+  .tl-body { font-size: 13px; color: var(--ink-light); line-height: 1.5; }
+
+  .proto-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  .proto-table th {
+    background: #3d1a08;
+    color: #f0faf0;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding: 10px 14px;
+    text-align: left;
+  }
+  .proto-table th:first-child { border-radius: 8px 0 0 0; }
+  .proto-table th:last-child { border-radius: 0 8px 0 0; }
+  .proto-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--ink-light);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  .proto-table tr:last-child td { border-bottom: none; }
+  .proto-table tr:nth-child(even) td { background: #faf5f0; }
+  .proto-table td strong { color: var(--ink); }
+
+  .status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+  }
+  .status-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .status-label {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .status-val { font-size: 13.5px; color: var(--ink); font-weight: 500; line-height: 1.4; }
+  .badge {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  .badge-amber { background: var(--amber-bg); color: var(--amber); }
+  .badge-green { background: var(--green-bg); color: var(--green); }
+  .badge-red { background: var(--red-bg); color: var(--red); }
+
+  /* Phase cards for physio plan */
+  .phases { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 12px; }
+  .phase-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .phase-header {
+    background: var(--accent);
+    color: white;
+    padding: 10px 16px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .phase-body { padding: 14px 16px; }
+  .phase-body li {
+    font-size: 13px;
+    color: var(--ink-light);
+    padding: 3px 0 3px 14px;
+    position: relative;
+    line-height: 1.45;
+  }
+  .phase-body li::before {
+    content: '·';
+    position: absolute; left: 2px;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .phase-body { list-style: none; }
+
+  .open-q {
+    background: var(--amber-bg);
+    border: 1px solid #f0d080;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 8px;
+    font-size: 13.5px;
+    color: var(--ink);
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    line-height: 1.5;
+  }
+  .open-q::before { content: '?'; font-weight: 700; color: var(--amber); flex-shrink: 0; }
+
+  .warning-box {
+    background: #fff8e8;
+    border: 1.5px solid #f0c060;
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 10px;
+    font-size: 13.5px;
+    color: #5a4010;
+    line-height: 1.5;
+  }
+  .warning-box strong { color: #3a2800; }
+
+  .footer {
+    text-align: center;
+    padding: 32px 24px;
+    font-size: 12px;
+    color: var(--ink-faint);
+    border-top: 1px solid var(--border);
+  }
+
+  @media (max-width: 600px) {
+    .header, .stats-row { padding-left: 20px; padding-right: 20px; }
+    .content { padding: 28px 16px 60px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-meta">Paws in Wayanad — Physio Briefing</div>
+  <h1>Gunni</h1>
+  <div class="header-sub">Chat period: September 2025 – April 2026 &nbsp;·&nbsp; For physiotherapy team use only</div>
+</div>
+
+<div class="stats-row">
+  <div class="stat"><div class="stat-label">Sex</div><div class="stat-value">Female</div></div>
+  <div class="stat"><div class="stat-label">Est. Age</div><div class="stat-value">~4 years</div></div>
+  <div class="stat"><div class="stat-label">Weight</div><div class="stat-value">~15 kg (fluctuating)</div></div>
+  <div class="stat"><div class="stat-label">Injury</div><div class="stat-value">Femur fracture</div></div>
+  <div class="stat"><div class="stat-label">Surgery</div><div class="stat-value">Pin + plate</div></div>
+  <div class="stat"><div class="stat-label">Prognosis</div><div class="stat-value">Guarded</div></div>
+</div>
+
+<div class="content">
+
+  <!-- ASHRAM GUIDANCE -->
+  <div class="ashram-banner">
+    <div class="ashram-banner-title">From the Ashram / Bhagavan's Guidance</div>
+    <div class="ashram-item">Uma: "Do not allow to amputate!" — Bhagavan's position after bone lysis diagnosis. Some fibrous holding remains; continue conservative approach.</div>
+    <div class="ashram-item">Tom (Nov 20, 2025): "Very mild PROM on paw and ankle of fractured leg, moving it up and down ×5, three times a day. Micro PROM only. Any pain resistance then stop. Do NOT touch shin or knee or thigh!"</div>
+    <div class="ashram-item">Durga (Jan 19): Massage over plate daily ×2 before walks; 1-inch block under plated paw while eating; laser on shoulders/hips 7–10 min minimum; slow walks on non-slippery slopes; sandy/non-slippery areas only; NO jumping or running.</div>
+  </div>
+
+  <!-- DIAGNOSIS -->
+  <div class="section">
+    <div class="section-title"><span class="section-icon">🦴</span> Diagnosis & Injury History</div>
+    <div class="card">
+      <div class="card-title">What happened</div>
+      <ul class="blist">
+        <li>Car accident Sept 9, 2025. <strong>Right hind femur fracture</strong> identified.</li>
+        <li>Dr Bapu (CUPA): pin needed; plate placement inadequate for femur; soft callus formed.</li>
+        <li>Dr Rao: bone lysis present; recommended aggressive antibiotics (8–12 weeks) or amputation.</li>
+        <li>Dr Pradeep: pin should be removed; bone fully formed callus; plating not needed in 99.9% of cases.</li>
+        <li>Dr Sai: bone completely lysed; infection spread via blood; amputation only option.</li>
+        <li>Dr Jishnu (Vadakara): bones haven't healed; leg contracted and shortened.</li>
+        <li>Current status: Post-plate removal (Feb 6, 2026). Uma: "Do not amputate." Aggressive antibiotic therapy ongoing; monitoring for healing response.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="section">
+    <div class="section-title"><span class="section-icon">📅</span> Key History & Surgery Timeline</div>
+    <div class="card">
+      <div class="timeline">
+
+        <div class="tl-item">
+          <div class="tl-date">Sept 9, 2025</div>
+          <div class="tl-title">Car accident — femur fracture</div>
+          <div class="tl-body">Right hind femur fracture identified. Transferred to CUPA for surgery.</div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-date">Sept 10, 2025</div>
+          <div class="tl-title">Surgery at CUPA — pin placement</div>
+          <div class="tl-body">Dr Bapu performs pin placement. Soft callus noted; bone healing initiated.</div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-date">Oct 11, 2025</div>
+          <div class="tl-title">Second surgery — pin removed, plate placed</div>
+          <div class="tl-body">Dr Rao: pin removed, plate placement with 6 screws + pin. Inadequate fixation for femur noted.</div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-date">Oct 27, 2025</div>
+          <div class="tl-title">Pin removal at WVS/Ooty</div>
+          <div class="tl-body">Pin removed. Plate and screws remain.</div>
+        </div>
+
+        <div class="tl-item warning">
+          <div class="tl-date">Jan 16, 2026</div>
+          <div class="tl-title">X-ray — pin migration and damage</div>
+          <div class="tl-body">Pin has migrated; damage noted. Healing stalled. Infection concerns arising.</div>
+        </div>
+
+        <div class="tl-item warning">
+          <div class="tl-date">Jan 30, 2026</div>
+          <div class="tl-title">X-ray — plate broken, complete bone lysis</div>
+          <div class="tl-body">Plate broken. Complete bone lysis confirmed. Infection present. Dr Rao and Dr Sai recommend amputation; Uma opposes.</div>
+        </div>
+
+        <div class="tl-item milestone">
+          <div class="tl-date">Feb 6, 2026</div>
+          <div class="tl-title">Plate and screws removed at Vadakara</div>
+          <div class="tl-body">All hardware removed at Dr Jishnu's clinic. Wound closure only. Uma: "Do not amputate." Conservative approach continues.</div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-date">Feb–Apr 2026</div>
+          <div class="tl-title">Post-plate removal management</div>
+          <div class="tl-body">Aggressive antibiotic therapy. Wound monitoring. Cage rest. Pain management. No physio until wound heals.</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- PHYSIO PLAN -->
+  <div class="section">
+    <div class="section-title"><span class="section-icon">📋</span> Prescribed Physio Plan</div>
+
+    <div class="phases">
+      <div class="phase-card">
+        <div class="phase-header">Phase 1 — Controlled Rest (Nov 20)</div>
+        <ul class="phase-body">
+          <li>Cage rest 3 weeks strict</li>
+          <li>Short leash walks 5 min max</li>
+          <li>Mild weight bearing only</li>
+          <li>Micro PROM paw/ankle only</li>
+        </ul>
+      </div>
+      <div class="phase-card">
+        <div class="phase-header">Phase 2 — Gradual Mobilization (Jan 19)</div>
+        <ul class="phase-body">
+          <li>Massage over plate site ×2 daily</li>
+          <li>1-inch block under plated paw</li>
+          <li>Laser on shoulders/hips 7–10 min</li>
+          <li>Slow walks sandy/non-slippery</li>
+        </ul>
+      </div>
+      <div class="phase-card">
+        <div class="phase-header">Phase 3 — Post-plate Removal (Feb 6+)</div>
+        <ul class="phase-body">
+          <li>Cage rest — wound healing priority</li>
+          <li>Pain management intensive</li>
+          <li>Wound monitoring strict</li>
+          <li>No physio until healed</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card" style="padding:0;overflow:hidden;">
+      <table class="proto-table">
+        <thead>
+          <tr>
+            <th>Exercise / Protocol</th>
+            <th>Frequency</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Micro PROM (paw/ankle only)</strong></td>
+            <td>3× daily, 5 reps</td>
+            <td>Do NOT touch shin, knee or thigh. Stop immediately if pain resistance.</td>
+          </tr>
+          <tr>
+            <td><strong>Massage over plate site</strong></td>
+            <td>2× daily before walks</td>
+            <td>Gentle; stop if pain signals (crying, resistance).</td>
+          </tr>
+          <tr>
+            <td><strong>Laser therapy</strong></td>
+            <td>On shoulders and hips</td>
+            <td>7–10 min minimum per site. Every alternate day initially.</td>
+          </tr>
+          <tr>
+            <td><strong>Short leash walks</strong></td>
+            <td>5 min max</td>
+            <td>Sandy/non-slippery only. No free running. No jumping.</td>
+          </tr>
+          <tr>
+            <td><strong>Hot fomentation</strong></td>
+            <td>Twice daily</td>
+            <td>On swollen leg — wrap in cloth, 15 min, not direct contact.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- CURRENT STATUS -->
+  <div class="section">
+    <div class="section-title"><span class="section-icon">📊</span> Current Status (February 2026)</div>
+    <div class="status-grid">
+      <div class="status-item">
+        <div class="status-label">Walking</div>
+        <div class="status-val"><span class="badge badge-red">None</span><br><small style="color:var(--ink-faint);font-size:12px;">Lying down, severe pain</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Standing</div>
+        <div class="status-val"><span class="badge badge-red">Unable</span><br><small style="color:var(--ink-faint);font-size:12px;">Refuses weight bearing</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Hind Limbs</div>
+        <div class="status-val"><span class="badge badge-red">Right leg held up</span><br><small style="color:var(--ink-faint);font-size:12px;">No weight bearing</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Pain Level</div>
+        <div class="status-val"><span class="badge badge-red">Significant</span><br><small style="color:var(--ink-faint);font-size:12px;">Buprenorphine 0.8ml ×3 daily</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Wound Status</div>
+        <div class="status-val"><span class="badge badge-red">Open/infected</span><br><small style="color:var(--ink-faint);font-size:12px;">Post-plate removal; oozing</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Bladder/Bowel</div>
+        <div class="status-val"><span class="badge badge-green">Natural</span><br><small style="color:var(--ink-faint);font-size:12px;">Managed when taken out</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Mood</div>
+        <div class="status-val"><span class="badge badge-amber">Social but distressed</span><br><small style="color:var(--ink-faint);font-size:12px;">Energetic; cries when caged alone</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Medication</div>
+        <div class="status-val"><span class="badge badge-amber">Intensive</span><br><small style="color:var(--ink-faint);font-size:12px;">Antibiotics, pain meds, Gabapentin</small></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KEY CONSIDERATIONS -->
+  <div class="section">
+    <div class="section-title"><span class="section-icon">⚠️</span> Key Considerations for Physio</div>
+
+    <div class="warning-box">
+      <strong>Critical handling rule:</strong> This dog is in significant pain post-plate removal. Do NOT attempt normal PROM or standing exercises until wound heals and bone response confirmed. Watch for pain signs: cries/whimpers on palpation; resists handling of operated leg. <strong>Do NOT force.</strong>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Pain management & handling</div>
+      <ul class="blist">
+        <li>Pain signs: Cries or whimpers on palpation of fracture site; resists handling of operated leg. Stop immediately.</li>
+        <li>Lifting: Support under both back legs simultaneously. Never lift by front legs alone or apply stomach pressure.</li>
+        <li>Medication: Buprenorphine 0.8ml every 8 hours; Gabapentin 150mg twice daily. Keep schedule strict.</li>
+        <li>No forced exercises — pain resistance trumps all.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Surfaces & movement</div>
+      <ul class="blist">
+        <li><strong>Non-slippery surfaces only.</strong> Grass and sand preferred.</li>
+        <li>No jumping, running, or free movement until bone healing confirmed.</li>
+        <li>Short leash walks only — max 5 minutes on sandy/non-slippery terrain.</li>
+        <li>Avoid stairs and uneven ground.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Behaviour & wound care</div>
+      <ul class="blist">
+        <li>Very social dog — calms immediately with human presence. Loves company and puppies.</li>
+        <li>Difficult to cage alone — use companionship to reduce distress, which aids recovery.</li>
+        <li>Wound care critical: keep dry and clean. No pressure or compression on surgical site.</li>
+        <li>Monitor for signs of spreading infection: increased swelling, heat, discharge odour.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- OPEN QUESTIONS -->
+  <div class="section">
+    <div class="section-title"><span class="section-icon">💬</span> Open Questions</div>
+    <div class="open-q">Will plate removal allow bone infection to resolve with antibiotics alone, or will amputation eventually be required? Uma's instruction: do not amputate.</div>
+    <div class="open-q">Has systemic infection spread beyond the bone (Dr Sai's concern about blood-borne spread)?</div>
+    <div class="open-q">What caused the initial pin migration and plate breakage — was it a surgical error or failure of fixation technique?</div>
+    <div class="open-q">Can a prosthetic leg extension improve quality of life in the long term if amputation becomes necessary?</div>
+    <div class="open-q">Timeline for next x-ray to assess bone healing post-plate removal? When can physio safely resume?</div>
+  </div>
+
+</div>
+
+<div class="footer">
+  Paws in Wayanad — Haven &nbsp;·&nbsp; Generated from WhatsApp group chat export &nbsp;·&nbsp; For internal physio team use
+</div>
+
+</body>
+</html>

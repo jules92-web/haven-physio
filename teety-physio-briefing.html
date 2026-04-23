@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teety — Physio Briefing</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f0f5ec;
+    --card: #f8fcf6;
+    --ink: #1c1a16;
+    --ink-light: #5a5648;
+    --ink-faint: #9a9183;
+    --accent: #5aaa2a;
+    --accent-soft: #e8f5d8;
+    --ashram: #2d5a1a;
+    --ashram-bg: #f0f5ea;
+    --ashram-border: #8fbc6e;
+    --green: #2d6a4f;
+    --green-bg: #d8f3dc;
+    --amber: #b5830a;
+    --amber-bg: #fef9e7;
+    --border: #dde8d3;
+    --shadow: 0 2px 16px rgba(28,26,22,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: #1a2e0a;
+    color: #fffdf8;
+    padding: 48px 40px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 280px; height: 280px;
+    border-radius: 50%;
+    background: rgba(90,170,42,0.15);
+    pointer-events: none;
+  }
+  .header-meta {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 5vw, 48px);
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+  .header-sub {
+    color: #b0a898;
+    font-size: 13px;
+  }
+
+  /* ── STAT CARDS ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    padding: 28px 40px;
+    background: #1a2e0a;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+  .stat {
+    background: rgba(255,255,255,0.06);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .stat-label {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a8070;
+    margin-bottom: 4px;
+  }
+  .stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    color: #fffdf8;
+    font-weight: 600;
+  }
+
+  /* ── MAIN CONTENT ── */
+  .content {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* ── ASHRAM BANNER ── */
+  .ashram-banner {
+    background: var(--ashram-bg);
+    border: 1.5px solid var(--ashram-border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 36px;
+  }
+  .ashram-banner-title {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ashram);
+    font-weight: 600;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .ashram-banner-title::before {
+    content: '🪔';
+    font-size: 14px;
+  }
+  .ashram-item {
+    font-size: 13.5px;
+    color: var(--ashram);
+    font-weight: 500;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(45,90,26,0.15);
+    line-height: 1.5;
+  }
+  .ashram-item:last-child { border-bottom: none; }
+
+  /* ── SECTION ── */
+  .section {
+    margin-bottom: 40px;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-icon {
+    width: 28px; height: 28px;
+    background: var(--accent-soft);
+    border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow);
+  }
+  .card-title {
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+
+  /* ── BULLET LIST ── */
+  .blist { list-style: none; }
+  .blist li {
+    font-size: 14px;
+    color: var(--ink-light);
+    padding: 5px 0 5px 18px;
+    position: relative;
+    line-height: 1.55;
+    border-bottom: 1px solid var(--border);
+  }
+  .blist li:last-child { border-bottom: none; }
+  .blist li::before {
+    content: '→';
+    position: absolute; left: 0;
+    color: var(--accent);
+    font-size: 12px;
+    top: 7px;
+  }
+  .blist li strong { color: var(--ink); font-weight: 600; }
+
+  /* ── TIMELINE ── */
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before {
+    content: '';
+    position: absolute; left: 8px; top: 6px; bottom: 6px;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--accent), var(--border));
+    border-radius: 2px;
+  }
+  .tl-item {
+    position: relative;
+    margin-bottom: 20px;
+  }
+  .tl-item::before {
+    content: '';
+    position: absolute;
+    left: -24px; top: 5px;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg);
+    box-shadow: 0 0 0 2px var(--accent);
+  }
+  .tl-item.milestone::before {
+    background: var(--green);
+    box-shadow: 0 0 0 2px var(--green);
+  }
+  .tl-item.warning::before {
+    background: var(--amber);
+    box-shadow: 0 0 0 2px var(--amber);
+  }
+  .tl-date {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 3px;
+  }
+  .tl-item.milestone .tl-date { color: var(--green); }
+  .tl-item.warning .tl-date { color: var(--amber); }
+  .tl-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 3px;
+  }
+  .tl-body {
+    font-size: 13px;
+    color: var(--ink-light);
+    line-height: 1.5;
+  }
+
+  /* ── TABLE ── */
+  .proto-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+  }
+  .proto-table th {
+    background: #1a2e0a;
+    color: #fffdf8;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding: 10px 14px;
+    text-align: left;
+  }
+  .proto-table th:first-child { border-radius: 8px 0 0 0; }
+  .proto-table th:last-child { border-radius: 0 8px 0 0; }
+  .proto-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--ink-light);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  .proto-table tr:last-child td { border-bottom: none; }
+  .proto-table tr:nth-child(even) td { background: #faf7f2; }
+  .proto-table td strong { color: var(--ink); }
+
+  /* ── STATUS GRID ── */
+  .status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+  }
+  .status-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .status-label {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .status-val {
+    font-size: 13.5px;
+    color: var(--ink);
+    font-weight: 500;
+    line-height: 1.4;
+  }
+  .badge {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  .badge-amber { background: var(--amber-bg); color: var(--amber); }
+  .badge-green { background: var(--green-bg); color: var(--green); }
+  .badge-red { background: #fde8e8; color: #c0392b; }
+  .badge-grey { background: #f0ece4; color: var(--ink-faint); }
+
+  /* ── OPEN QS ── */
+  .open-q {
+    background: var(--amber-bg);
+    border: 1px solid #f0d080;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 8px;
+    font-size: 13.5px;
+    color: var(--ink);
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    line-height: 1.5;
+  }
+  .open-q::before { content: '?'; font-weight: 700; color: var(--amber); flex-shrink: 0; }
+
+  /* ── FOOTER ── */
+  .footer {
+    text-align: center;
+    padding: 32px 24px;
+    font-size: 12px;
+    color: var(--ink-faint);
+    border-top: 1px solid var(--border);
+  }
+
+  @media (max-width: 600px) {
+    .header, .stats-row { padding-left: 20px; padding-right: 20px; }
+    .content { padding: 28px 16px 60px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-meta">Paws in Wayanad — Physio Briefing</div>
+  <h1>Teety</h1>
+  <div class="header-sub">Chat period: December 2025 – April 2026 &nbsp;·&nbsp; For physiotherapy team use only</div>
+</div>
+
+<div class="stats-row">
+  <div class="stat">
+    <div class="stat-label">Sex</div>
+    <div class="stat-value">Female</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">Age (April)</div>
+    <div class="stat-value">~7 months</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">Time at rescue</div>
+    <div class="stat-value">~4 months</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">Injury</div>
+    <div class="stat-value">Bilateral left legs</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">Surgery</div>
+    <div class="stat-value">~Dec 10, 2025</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">Status</div>
+    <div class="stat-value">Walking!</div>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- ASHRAM GUIDANCE -->
+  <div class="ashram-banner">
+    <div class="ashram-banner-title">From the Ashram / Bhagavan's Guidance</div>
+    <div class="ashram-item"><strong>Tom (Jan 14, 2026):</strong> "Bhagavan will take up after Satsang." / "Looks really good. She can be outside of cage more and walk around in the room but under supervision. Outdoors mostly for peeing and pooping under supervision."</div>
+    <div class="ashram-item"><strong>Uma (Jan 25, 2026):</strong> "How's she? Could you take a video of Paleri walking?" / "Bandage has been on 7 weeks now — doctors said 8 weeks. You can keep it for one more week but please take her out more and take the cone off when people are around. You can walk her on a leash."</div>
+    <div class="ashram-item"><strong>Uma (Dec 2, 2025):</strong> "Can give Cremaffin." — for initial constipation management.</div>
+  </div>
+
+  <!-- DIAGNOSIS -->
+  <div class="section">
+    <div class="section-title"><span class="section-icon">🦴</span> Diagnosis & Injury</div>
+    <div class="card">
+      <div class="card-title">What happened</div>
+      <ul class="blist">
+        <li><strong>Hit-and-run trauma (December 1, 2025):</strong> Both left legs fractured from lateral impact</li>
+        <li><strong>Front left leg:</strong> Radius and ulna fracture — <strong>required plating surgery</strong> by Dr Rao (Bangalore)</li>
+        <li><strong>Back left leg:</strong> Tibia and fibula fracture — <strong>managed conservatively with Robert Jones bandage</strong> (no surgery needed)</li>
+        <li><strong>Hip:</strong> Hairline hip fracture — healing naturally without intervention</li>
+        <li><strong>Pre-surgical assessment:</strong> Blood work acceptable. Mild fever and dehydration on arrival.</li>
+        <li>Initial rescue at Vadakara clinic for X-rays and stabilisation. Transported to Haven for ongoing care and surgery.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="section">
+    <div class="section-title"><span class="section-icon">📅</span> Key History</div>
+    <div class="card">
+      <div class="timeline">
+
+        <div class="tl-item warning">
+          <div class="tl-date">1 Dec 2025</div>
+          <div class="tl-title">Hit-and-run rescue</div>
+          <div class="tl-body">Both left legs fractured. Brought to Vadakara clinic for initial assessment and X-rays. Arrived at Haven.</div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-date">2 Dec 2025</div>
+          <div class="tl-title">Supportive care begun</div>
+          <div class="tl-body">IV drip started for dehydration. Tramadol IM for pain. Cremaffin for initial constipation.</div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-date">6 Dec 2025</div>
+          <div class="tl-title">Complete imaging &amp; blood work</div>
+          <div class="tl-body">X-rays and blood work completed. Cleared for surgery.</div>
+        </div>
+
+        <div class="tl-item milestone">
+          <div class="tl-date">~10 Dec 2025</div>
+          <div class="tl-title">Radius/ulna plating surgery</div>
+          <div class="tl-body">Dr Rao, Bangalore. Front left leg plate fixation. Robert Jones bandage applied to back left leg (tibia/fibula fracture). Cost negotiated to 27,000 rupees.</div>
+        </div>
+
+        <div class="tl-item milestone">
+          <div class="tl-date">15 Dec 2025</div>
+          <div class="tl-title">First walking without external help</div>
+          <div class="tl-body">Early milestone observed and video documented. Early weight bearing on legs.</div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-date">10 Jan 2026</div>
+          <div class="tl-title">Durga physio review</div>
+          <div class="tl-body">2 more weeks cage rest recommended. 10 min daily outdoor walks for pee/poo in natural position.</div>
+        </div>
+
+        <div class="tl-item milestone">
+          <div class="tl-date">14 Jan 2026</div>
+          <div class="tl-title">Tom/Bhagavan guidance — cage rest ending</div>
+          <div class="tl-body">Can be outside cage in room under supervision. Outdoor mostly for pottying under supervision. Looks really good.</div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-date">25 Jan 2026</div>
+          <div class="tl-title">Bandage removal milestone</div>
+          <div class="tl-body">Bandage due for removal (8-week mark). Can walk on leash without cone. Ready to transition to outdoor walking.</div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-date">17 Feb 2026</div>
+          <div class="tl-title">Follow-up assessment</div>
+          <div class="tl-body">Walking but still avoiding front left leg. No pain on palpation. Weight bearing improving.</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- CURRENT STATUS -->
+  <div class="section">
+    <div class="section-title"><span class="section-icon">📊</span> Current Status (April 2026)</div>
+    <div class="status-grid">
+      <div class="status-item">
+        <div class="status-label">Walking</div>
+        <div class="status-val"><span class="badge badge-green">WALKING INDEPENDENTLY</span><br><small style="color:var(--ink-faint);font-size:12px;">Great progress!</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Standing</div>
+        <div class="status-val"><span class="badge badge-green">Full weight bearing</span><br><small style="color:var(--ink-faint);font-size:12px;">Cautious on front left</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Front left leg (plated)</div>
+        <div class="status-val"><span class="badge badge-amber">Not fully weight bearing</span><br><small style="color:var(--ink-faint);font-size:12px;">Still slightly avoided</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Back left leg (conservative)</div>
+        <div class="status-val"><span class="badge badge-green">Recovering well</span><br><small style="color:var(--ink-faint);font-size:12px;">Good functional improvement</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Hip (hairline fracture)</div>
+        <div class="status-val"><span class="badge badge-green">Healing well</span><br><small style="color:var(--ink-faint);font-size:12px;">No intervention needed</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Bladder</div>
+        <div class="status-val"><span class="badge badge-green">Normal</span><br><small style="color:var(--ink-faint);font-size:12px;">Drinking well</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Bowel</div>
+        <div class="status-val"><span class="badge badge-green">Normal function</span><br><small style="color:var(--ink-faint);font-size:12px;">Restored</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Temperament</div>
+        <div class="status-val"><span class="badge badge-green">Very calm</span><br><small style="color:var(--ink-faint);font-size:12px;">Food-motivated, responsive</small></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CURRENT PHYSIO PROTOCOL -->
+  <div class="section">
+    <div class="section-title"><span class="section-icon">🏃</span> Physio Protocol (Dr Rao &amp; Dr Anvitha + Durga)</div>
+    <div class="card" style="padding:0;overflow:hidden;">
+      <table class="proto-table">
+        <thead>
+          <tr>
+            <th>Exercise</th>
+            <th>Frequency</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>PROM</strong></td>
+            <td>3× daily</td>
+            <td>Both legs. Gentle. Stop at any pain signal.</td>
+          </tr>
+          <tr>
+            <td><strong>Assisted walking</strong></td>
+            <td>2× daily</td>
+            <td>Short supervised walks. Encourage natural gait.</td>
+          </tr>
+          <tr>
+            <td><strong>Ball exercise</strong></td>
+            <td>Once daily</td>
+            <td>5 minutes only. Gentle motivation — don't overdo.</td>
+          </tr>
+          <tr>
+            <td><strong>Swimming / hydrotherapy</strong></td>
+            <td>Post-stitch recovery</td>
+            <td>Pool available. Good for unloaded movement.</td>
+          </tr>
+          <tr>
+            <td><strong>Outdoor supervised pottying</strong></td>
+            <td>Multiple times daily</td>
+            <td>Natural position — important for hip healing and bowel regulation.</td>
+          </tr>
+          <tr>
+            <td><strong>Leash walks</strong></td>
+            <td>As able</td>
+            <td>No off-leash. Prevent jumping or running.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- KEY CONSIDERATIONS -->
+  <div class="section">
+    <div class="section-title"><span class="section-icon">⚠️</span> Key Considerations for Physio</div>
+
+    <div class="card">
+      <div class="card-title">Front left leg — plated radius/ulna</div>
+      <ul class="blist">
+        <li><strong>Not yet fully weight bearing.</strong> Still slightly avoided during walking — continue monitoring for equal loading during physio.</li>
+        <li>Metal hardware integrity: observe for twisting or impact. Post-surgical comfort must be maintained.</li>
+        <li>Gentle PROM and gradual loading as she progresses.</li>
+        <li>No rough play with other dogs until fully weight bearing achieved.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Trauma response &amp; handling</div>
+      <ul class="blist">
+        <li><strong>Initial presentation:</strong> Very scared and aggressive from trauma — now fully managed with pain control and care.</li>
+        <li>Now very calm and food-motivated. Responds well to care team.</li>
+        <li><strong>Muzzle manageable if needed</strong> for procedures or handling sensitive areas.</li>
+        <li>May still tense during lifting — be gentle and supportive.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Surface &amp; movement preferences</div>
+      <ul class="blist">
+        <li><strong>Outdoor natural surface (dirt, grass) strongly preferred</strong> — provides grip and natural movement feedback.</li>
+        <li>Avoid slippery or hard surfaces (cement, tile) that may stress healing bones or cause slipping.</li>
+        <li>Short walks on leash — no off-leash, no jumping, no running.</li>
+        <li>Gentle ball play (5 min once daily) is acceptable — keep it calm and controlled.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Post-surgical hardware &amp; bone healing</div>
+      <ul class="blist">
+        <li>Front left leg is plated — hardware must be protected from twisting or impact.</li>
+        <li>Back left leg was managed conservatively — no hardware but bone union still healing.</li>
+        <li>Hip hairline fracture: no intervention needed, healing naturally — but avoid extreme twisting or falls.</li>
+        <li>Progressive weight bearing is appropriate — monitor her natural progression.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Swimming &amp; hydrotherapy</div>
+      <ul class="blist">
+        <li>Pool therapy prescribed post-stitch recovery (2–3 days after stitch removal).</li>
+        <li><strong>Has this begun?</strong> Confirm current status.</li>
+        <li>Pool provides excellent unloaded movement — particularly helpful for weight bearing progression.</li>
+        <li>Ensure safe entry and exit — may need assistance with positioning on slippery surfaces.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Pain &amp; comfort</div>
+      <ul class="blist">
+        <li>No pain on palpation as of Feb 2026 — good healing progress.</li>
+        <li>If pain signs appear (limping worse, reluctance to move, swelling), report immediately.</li>
+        <li>Food motivation is strong — use this during sessions for encouragement and positive association.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- OPEN QUESTIONS -->
+  <div class="section">
+    <div class="section-title"><span class="section-icon">💬</span> Open Questions</div>
+    <div class="open-q">Full weight bearing on front left leg — when expected? Currently still slightly avoided.</div>
+    <div class="open-q">Swimming/pool therapy — has this begun? Prescribed post-stitch recovery. Current status?</div>
+    <div class="open-q">Splint/bandage status — fully removed? Confirm current external support.</div>
+    <div class="open-q">Long-term outcome of hairline hip fracture — will it leave any residual weakness?</div>
+    <div class="open-q">Follow-up X-ray recommended to confirm hardware position and bone union progress.</div>
+  </div>
+
+</div>
+
+<div class="footer">
+  Paws in Wayanad — Haven &nbsp;·&nbsp; Generated from WhatsApp group chat export &nbsp;·&nbsp; For internal physio team use
+</div>
+
+</body>
+</html>

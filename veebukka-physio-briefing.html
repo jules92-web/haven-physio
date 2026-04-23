@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Veebukka — Physio Briefing</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #eef5f1;
+    --card: #f7fcf9;
+    --ink: #1a1e1a;
+    --ink-light: #4a5548;
+    --ink-faint: #8a9688;
+    --accent: #3a9a68;
+    --accent-soft: #d8f0e6;
+    --ashram: #7b3f00;
+    --ashram-bg: #fff3e0;
+    --ashram-border: #e6a85a;
+    --green: #2d6a4f;
+    --green-bg: #d8f3dc;
+    --amber: #b5830a;
+    --amber-bg: #fef9e7;
+    --red-bg: #fde8e8;
+    --red: #c0392b;
+    --border: #dce8dc;
+    --shadow: 0 2px 16px rgba(26,30,26,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .header {
+    background: #0a2518;
+    color: #f0faf0;
+    padding: 48px 40px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 320px; height: 320px;
+    border-radius: 50%;
+    background: rgba(58,154,104,0.2);
+    pointer-events: none;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: 30%;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: rgba(58,154,104,0.08);
+    pointer-events: none;
+  }
+  .header-meta {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #7acea8;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 5vw, 48px);
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+  .header-sub { color: #7a9e7a; font-size: 13px; }
+
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    padding: 28px 40px;
+    background: #0a2518;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .stat {
+    background: rgba(255,255,255,0.06);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .stat-label {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #5a7a6a;
+    margin-bottom: 4px;
+  }
+  .stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    color: #f0faf0;
+    font-weight: 600;
+  }
+
+  .content {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  .ashram-banner {
+    background: var(--ashram-bg);
+    border: 1.5px solid var(--ashram-border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 36px;
+  }
+  .ashram-banner-title {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ashram);
+    font-weight: 600;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .ashram-banner-title::before { content: '🪔'; font-size: 14px; }
+  .ashram-item {
+    font-size: 13.5px;
+    color: var(--ashram);
+    font-weight: 500;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(196,92,26,0.15);
+    line-height: 1.5;
+  }
+  .ashram-item:last-child { border-bottom: none; }
+
+  .section { margin-bottom: 40px; }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-icon {
+    width: 28px; height: 28px;
+    background: var(--accent-soft);
+    border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow);
+  }
+  .card-title {
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+
+  .blist { list-style: none; }
+  .blist li {
+    font-size: 14px;
+    color: var(--ink-light);
+    padding: 5px 0 5px 18px;
+    position: relative;
+    line-height: 1.55;
+    border-bottom: 1px solid var(--border);
+  }
+  .blist li:last-child { border-bottom: none; }
+  .blist li::before {
+    content: '→';
+    position: absolute; left: 0;
+    color: var(--accent);
+    font-size: 12px;
+    top: 7px;
+  }
+  .blist li strong { color: var(--ink); font-weight: 600; }
+
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before {
+    content: '';
+    position: absolute; left: 8px; top: 6px; bottom: 6px;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--accent), var(--border));
+    border-radius: 2px;
+  }
+  .tl-item { position: relative; margin-bottom: 20px; }
+  .tl-item::before {
+    content: '';
+    position: absolute;
+    left: -24px; top: 5px;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg);
+    box-shadow: 0 0 0 2px var(--accent);
+  }
+  .tl-item.milestone::before { background: #2d6a4f; box-shadow: 0 0 0 2px #2d6a4f; }
+  .tl-item.warning::before { background: var(--amber); box-shadow: 0 0 0 2px var(--amber); }
+  .tl-item.cancelled::before { background: var(--red); box-shadow: 0 0 0 2px var(--red); }
+  .tl-date {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 3px;
+  }
+  .tl-item.milestone .tl-date { color: #2d6a4f; }
+  .tl-item.warning .tl-date { color: var(--amber); }
+  .tl-item.cancelled .tl-date { color: var(--red); }
+  .tl-title { font-size: 14px; font-weight: 600; color: var(--ink); margin-bottom: 3px; }
+  .tl-body { font-size: 13px; color: var(--ink-light); line-height: 1.5; }
+
+  .proto-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  .proto-table th {
+    background: #0a2518;
+    color: #f0faf0;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding: 10px 14px;
+    text-align: left;
+  }
+  .proto-table th:first-child { border-radius: 8px 0 0 0; }
+  .proto-table th:last-child { border-radius: 0 8px 0 0; }
+  .proto-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--ink-light);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  .proto-table tr:last-child td { border-bottom: none; }
+  .proto-table tr:nth-child(even) td { background: #f0f7f3; }
+  .proto-table td strong { color: var(--ink); }
+
+  .status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+  }
+  .status-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .status-label {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .status-val { font-size: 13.5px; color: var(--ink); font-weight: 500; line-height: 1.4; }
+  .badge {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  .badge-amber { background: var(--amber-bg); color: var(--amber); }
+  .badge-green { background: var(--green-bg); color: var(--green); }
+  .badge-red { background: var(--red-bg); color: var(--red); }
+
+  /* Phase cards for physio plan */
+  .phases { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 12px; }
+  .phase-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .phase-header {
+    background: var(--accent);
+    color: white;
+    padding: 10px 16px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .phase-body { padding: 14px 16px; }
+  .phase-body li {
+    font-size: 13px;
+    color: var(--ink-light);
+    padding: 3px 0 3px 14px;
+    position: relative;
+    line-height: 1.45;
+  }
+  .phase-body li::before {
+    content: '·';
+    position: absolute; left: 2px;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .phase-body { list-style: none; }
+
+  .open-q {
+    background: var(--amber-bg);
+    border: 1px solid #f0d080;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 8px;
+    font-size: 13.5px;
+    color: var(--ink);
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    line-height: 1.5;
+  }
+  .open-q::before { content: '?'; font-weight: 700; color: var(--amber); flex-shrink: 0; }
+
+  .warning-box {
+    background: #fff8e8;
+    border: 1.5px solid #f0c060;
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 10px;
+    font-size: 13.5px;
+    color: #5a4010;
+    line-height: 1.5;
+  }
+  .warning-box strong { color: #3a2800; }
+
+  .footer {
+    text-align: center;
+    padding: 32px 24px;
+    font-size: 12px;
+    color: var(--ink-faint);
+    border-top: 1px solid var(--border);
+  }
+
+  @media (max-width: 600px) {
+    .header, .stats-row { padding-left: 20px; padding-right: 20px; }
+    .content { padding: 28px 16px 60px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-meta">Paws in Wayanad — Physio Briefing</div>
+  <h1>Veebukka</h1>
+  <div class="header-sub">Chat period: August 2025 – April 2026 &nbsp;·&nbsp; For physiotherapy team use only</div>
+</div>
+
+<div class="stats-row">
+  <div class="stat"><div class="stat-label">Sex</div><div class="stat-value">Female</div></div>
+  <div class="stat"><div class="stat-label">Age</div><div class="stat-value">~Adult</div></div>
+  <div class="stat"><div class="stat-label">Weight</div><div class="stat-value">~10.1 kg</div></div>
+  <div class="stat"><div class="stat-label">Injury</div><div class="stat-value">Femoral head fracture</div></div>
+  <div class="stat"><div class="stat-label">Surgeries</div><div class="stat-value">Two FHO (Jan & Feb)</div></div>
+  <div class="stat"><div class="stat-label">Status</div><div class="stat-value">Post-op recovery</div></div>
+</div>
+
+<div class="content">
+
+  <!-- ASHRAM GUIDANCE -->
+  <div class="ashram-banner">
+    <div class="ashram-banner-title">From the Ashram / Uma's Guidance</div>
+    <div class="ashram-item"><strong>Uma (Feb 6, 2026):</strong> "I don't think Rao made any mistake with Veebu. Muscle contraction around the femur and inflammation around femur joint. Needs physio. Bring her back now." — Assessment post-first FHO x-ray indicating physio as solution.</div>
+    <div class="ashram-item"><strong>Uma (Feb 8, 2026):</strong> Revised medicine protocol after second surgery: Cefpodoxime, Firocoxib, Buprenorphine, Gabapentin, Pantoprazole with specified durations. "Physio plan is fine. No change."</div>
+    <div class="ashram-item"><strong>Dr Ramesh (Feb 8, 2026, Cessna surgical team):</strong> "Put her for swimming." — hydrotherapy prescribed as key recovery modality.</div>
+    <div class="ashram-item"><strong>Uma (Mar 9, 2026):</strong> "Is there any possibility of using the pool?" — strongly advocating for hydrotherapy implementation.</div>
+  </div>
+
+  <!-- DIAGNOSIS -->
+  <div class="section">
+    <div class="section-title"><span class="section-icon">🦴</span> Diagnosis & Injury</div>
+    <div class="card">
+      <div class="card-title">Femoral head fracture — untreated old injury</div>
+      <ul class="blist">
+        <li><strong>Diagnosis:</strong> Old femoral head fracture with severe secondary arthritis (NOT hip dysplasia — confirmed by Dr Rao).</li>
+        <li><strong>Pre-surgical history:</strong> Sept 26, 2025 — Veebu spontaneously began using both legs. Tom initially thought no surgery needed. But progressive limping returned.</li>
+        <li><strong>Dec 19, 2025 x-rays:</strong> Dr Rao: "This is a very bad hip. Fracture of the femoral head. Requires FHO. The only way to make her pain-free."</li>
+        <li><strong>Secondary conditions:</strong> Tick fever (Babesia vogeli) treated 2025. Spayed Sept 30, 2025. Bite wound from Karimbi post-spay (Oct).</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Surgical history — two FHO procedures</div>
+      <ul class="blist">
+        <li><strong>First FHO (Jan 14, 2026, Dr Rao):</strong> INADEQUATE — femoral neck not fully removed. Continued pain. Post-op aggression noted.</li>
+        <li><strong>Second FHO (Feb 8, 2026, Dr Ramesh, Cessna Bangalore):</strong> Corrective surgery. Femoral neck completely removed. Antibiotic beads placed for infection management. Went well.</li>
+        <li><strong>Post-op protocol (Cessna):</strong> Laser, PROM from day 3, massage from toes upward.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="section">
+    <div class="section-title"><span class="section-icon">📅</span> Key History</div>
+    <div class="card">
+      <div class="timeline">
+
+        <div class="tl-item">
+          <div class="tl-date">August 2025</div>
+          <div class="tl-title">FHO first discussed</div>
+          <div class="tl-body">Initial consideration for surgical intervention. Tick fever treatment delayed proceedings.</div>
+        </div>
+
+        <div class="tl-item milestone">
+          <div class="tl-date">September 26, 2025</div>
+          <div class="tl-title">Spontaneous bilateral use — sudden improvement</div>
+          <div class="tl-body">Veebu spontaneously used both legs. Tom: "Amazing. Then no surgery needed." But limping returned progressively.</div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-date">September 30, 2025</div>
+          <div class="tl-title">Spaying surgery (WVS Ooty)</div>
+          <div class="tl-body">Routine spay procedure. Bite wound from Karimbi occurred post-operatively (Oct).</div>
+        </div>
+
+        <div class="tl-item warning">
+          <div class="tl-date">December 19, 2025</div>
+          <div class="tl-title">X-rays confirm femoral fracture + severe arthritis</div>
+          <div class="tl-body">Dr Rao confirms old femoral head fracture etiology (not dysplasia) with severe secondary arthritis. FHO confirmed necessary.</div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-date">January 14, 2026</div>
+          <div class="tl-title">First FHO surgery (Dr Rao)</div>
+          <div class="tl-body">Surgical intervention performed. Femoral neck not fully removed — inadequate procedure.</div>
+        </div>
+
+        <div class="tl-item warning">
+          <div class="tl-date">January 27, 2026</div>
+          <div class="tl-title">12 days post-op — no weight bearing, pain, aggression</div>
+          <div class="tl-body">No weight bearing on operated leg. Pain evident. Post-surgical aggression onset — alarm bells.</div>
+        </div>
+
+        <div class="tl-item cancelled">
+          <div class="tl-date">February 6, 2026</div>
+          <div class="tl-title">X-ray under sedation — residual neck visible</div>
+          <div class="tl-body">Second opinion imaging confirms inadequate surgery. Residual femoral neck present. Uma: "Needs physio. Muscle contraction around femur."</div>
+        </div>
+
+        <div class="tl-item milestone">
+          <div class="tl-date">February 8, 2026</div>
+          <div class="tl-title">Second FHO (Dr Ramesh, Cessna Bangalore)</div>
+          <div class="tl-body">Corrective surgery. Femoral neck fully removed. Antibiotic beads placed. Procedure went well.</div>
+        </div>
+
+        <div class="tl-item milestone">
+          <div class="tl-date">Feb 11–16, 2026</div>
+          <div class="tl-title">Early post-op improvement</div>
+          <div class="tl-body">Improving daily. PROM started gently. Aggression beginning to resolve.</div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-date">Feb 22–24, 2026</div>
+          <div class="tl-title">Sutures removed — gait videos show improvement</div>
+          <div class="tl-body">Sutures removed at day 14. Videos show progressive walking improvement.</div>
+        </div>
+
+        <div class="tl-item milestone">
+          <div class="tl-date">March 8, 2026</div>
+          <div class="tl-title">1 month post-op — Dr Ramesh prescribes swimming</div>
+          <div class="tl-body">Walking videos show improvement but pain during hip extension visible. Dr Ramesh: "Put her for swimming." — hydrotherapy prescribed.</div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-date">March 17, 2026</div>
+          <div class="tl-title">Uses operated leg on slow walk; hops on 3 at fast pace</div>
+          <div class="tl-body">Progressive weight bearing on operated limb during controlled slow pace. Compensatory hopping at faster speeds.</div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-date">March 23, 2026</div>
+          <div class="tl-title">6 weeks post-op — backward hip extension range improving</div>
+          <div class="tl-body">André demonstrating pain threshold during PROM. Backward extension (most painful limit) gradually improving.</div>
+        </div>
+
+        <div class="tl-item milestone">
+          <div class="tl-date">April 18, 2026</div>
+          <div class="tl-title">Much improved — daily slow walks helping enormously</div>
+          <div class="tl-body">"Still slightly limping but sooo much better." Daily slow walks outside demonstrating significant functional improvement.</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- PHYSIO PLAN -->
+  <div class="section">
+    <div class="section-title"><span class="section-icon">📋</span> Prescribed Physio Plan (Cessna Protocol)</div>
+
+    <div class="card" style="padding:0;overflow:hidden;">
+      <table class="proto-table">
+        <thead>
+          <tr>
+            <th>Exercise</th>
+            <th>Frequency</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Laser therapy</strong></td>
+            <td>2–3× weekly</td>
+            <td>4–5 min on surgical site. Good for wound healing and pain management. Start immediately, then reduce to 2–3× weekly.</td>
+          </tr>
+          <tr>
+            <td><strong>Toe-to-hip massage</strong></td>
+            <td>Before each PROM</td>
+            <td>Long upward strokes from toes. Prepares muscles and reduces PROM resistance. Essential preparation.</td>
+          </tr>
+          <tr>
+            <td><strong>PROM (hip)</strong></td>
+            <td>2× daily</td>
+            <td>Gentle only. Monitor backward extension — this is the painful limit. Do not force. Mark current pain threshold and work to expand gradually.</td>
+          </tr>
+          <tr>
+            <td><strong>Hydrotherapy (swimming)</strong></td>
+            <td>As available (pending)</td>
+            <td>Dr Ramesh prescribed. Uma strongly supporting. Pool access pending. HIGH PRIORITY.</td>
+          </tr>
+          <tr>
+            <td><strong>Leash walks</strong></td>
+            <td>2× daily</td>
+            <td>Slow, controlled pace only. No off-leash with other dogs. Grass surface preferred. Dramatically improves mood and physical progress.</td>
+          </tr>
+          <tr>
+            <td><strong>No running/jumping</strong></td>
+            <td>Strictly enforced</td>
+            <td>Playing with dogs risks re-injury. She loves to play — monitor carefully. Confine to calm, supervised movement.</td>
+          </tr>
+          <tr>
+            <td><strong>Muzzle for PROM</strong></td>
+            <td>During sessions</td>
+            <td>Dr Ramesh noted muzzle necessary for safety — she resists and can bite during hip movement, especially at pain limits.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- CURRENT STATUS -->
+  <div class="section">
+    <div class="section-title"><span class="section-icon">📊</span> Current Status (April 2026)</div>
+    <div class="status-grid">
+      <div class="status-item">
+        <div class="status-label">Walking</div>
+        <div class="status-val"><span class="badge badge-green">Much improved</span><br><small style="color:var(--ink-faint);font-size:12px;">Slow pace: 4-legged; fast pace: 3-leg hop</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Standing</div>
+        <div class="status-val"><span class="badge badge-green">Full weight bearing</span><br><small style="color:var(--ink-faint);font-size:12px;">On slow walk; range improving</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Hip extension (backward)</div>
+        <div class="status-val"><span class="badge badge-amber">Limited (painful)</span><br><small style="color:var(--ink-faint);font-size:12px;">Gradual range expansion in progress</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">PROM resistance</div>
+        <div class="status-val"><span class="badge badge-amber">Resisted but manageable</span><br><small style="color:var(--ink-faint);font-size:12px;">Pain at backward extension; improving</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Pain meds</div>
+        <div class="status-val"><span class="badge badge-green">None current</span><br><small style="color:var(--ink-faint);font-size:12px;">Pain only during forced hip extension</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Bladder & bowel</div>
+        <div class="status-val"><span class="badge badge-green">Normal, independent</span><br><small style="color:var(--ink-faint);font-size:12px;">No issues; regular function</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Mood</div>
+        <div class="status-val"><span class="badge badge-green">Very energetic</span><br><small style="color:var(--ink-faint);font-size:12px;">Playful; loves sun & other dogs; outdoor thriving</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Supplements</div>
+        <div class="status-val">Mecobalamine, Calcium D3 K2, Joint Support, Hair-Skin, Vitamin C, Omega-3</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KEY CONSIDERATIONS -->
+  <div class="section">
+    <div class="section-title"><span class="section-icon">⚠️</span> Key Considerations for Physio</div>
+
+    <div class="warning-box">
+      <strong>CRITICAL — Hip extension BACKWARDS is the painful limit:</strong> Never force this during PROM. Work at current comfortable range and expand very gradually. Over-aggressive extension will cause pain and reduce engagement.
+    </div>
+
+    <div class="card">
+      <div class="card-title">PROM safety & technique</div>
+      <ul class="blist">
+        <li><strong>Requires muzzle for safety</strong> per Dr Ramesh — she resists and can bite during hip movement.</li>
+        <li>Backward hip extension is the painful threshold — do not push beyond her comfortable limit.</li>
+        <li>Massage hind limbs from toes upward before PROM — this reduces muscle resistance and improves tolerance.</li>
+        <li>Sessions should be gentle and respectful of pain signals.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Outdoor time — critical for recovery</div>
+      <ul class="blist">
+        <li><strong>She thrives outdoors:</strong> dramatically better emotionally and physically outside. Maximize outdoor slow walks.</li>
+        <li>Daily slow walks are demonstrably helping her gait and confidence — continue and expand where possible.</li>
+        <li>Grass surface preferred for weight bearing and comfort.</li>
+        <li>No off-leash time with other dogs — risk of re-injury from play.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Aggression & temperament</div>
+      <ul class="blist">
+        <li>Post-operative aggression was significant after first surgery but is now mostly resolved.</li>
+        <li>She may be aggressive in unfamiliar environments or with unfamiliar handlers — introduce gently and with trust-building.</li>
+        <li>She is very energetic and playful — channel this energy into physio engagement rather than uncontrolled play.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Hydrotherapy — HIGHEST PRIORITY</div>
+      <ul class="blist">
+        <li><strong>Dr Ramesh and Uma both strongly indicate swimming as the next critical intervention.</strong></li>
+        <li>Water therapy offers non-weight-bearing strengthening, pain relief, and significant psychological benefit.</li>
+        <li>Advocate strongly for pool access — this is the missing piece in her recovery.</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- OPEN QUESTIONS -->
+  <div class="section">
+    <div class="section-title"><span class="section-icon">💬</span> Open Questions</div>
+    <div class="open-q">Hydrotherapy timing: when will pool access be available? Highest priority pending intervention.</div>
+    <div class="open-q">Has PROM with muzzle been implemented properly per Dr Ramesh's specification?</div>
+    <div class="open-q">Will the gait fully normalize (4-legged at all speeds) or will some compensatory asymmetry remain?</div>
+    <div class="open-q">Is ongoing Gabapentin needed long-term? Chat indicates this was an open question (Feb 22).</div>
+    <div class="open-q">Follow-up x-ray recommended to confirm second surgery hardware position and healing status.</div>
+  </div>
+
+</div>
+
+<div class="footer">
+  Paws in Wayanad — Haven &nbsp;·&nbsp; Generated from WhatsApp group chat export &nbsp;·&nbsp; For internal physio team use
+</div>
+
+</body>
+</html>

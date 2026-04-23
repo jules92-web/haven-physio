@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plumby — Physio Briefing</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f2eff8;
+    --card: #fdfcff;
+    --ink: #1c1a16;
+    --ink-light: #5a5648;
+    --ink-faint: #9a9183;
+    --accent: #8a5ad4;
+    --accent-soft: #f0e8f8;
+    --ashram: #5c2d7a;
+    --ashram-bg: #f5ebff;
+    --ashram-border: #d4b5e8;
+    --green: #2d6a4f;
+    --green-bg: #d8f3dc;
+    --amber: #b5830a;
+    --amber-bg: #fef9e7;
+    --border: #e8dff0;
+    --shadow: 0 2px 16px rgba(28,26,22,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: #1d0a3d;
+    color: #fffdf8;
+    padding: 48px 40px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 280px; height: 280px;
+    border-radius: 50%;
+    background: rgba(138,90,212,0.15);
+    pointer-events: none;
+  }
+  .header-meta {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 5vw, 48px);
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+  .header-sub {
+    color: #b0a898;
+    font-size: 13px;
+  }
+
+  /* ── STAT CARDS ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    padding: 28px 40px;
+    background: #1d0a3d;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+  .stat {
+    background: rgba(255,255,255,0.06);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .stat-label {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a8070;
+    margin-bottom: 4px;
+  }
+  .stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    color: #fffdf8;
+    font-weight: 600;
+  }
+
+  /* ── MAIN CONTENT ── */
+  .content {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* ── ASHRAM BANNER ── */
+  .ashram-banner {
+    background: var(--ashram-bg);
+    border: 1.5px solid var(--ashram-border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 36px;
+  }
+  .ashram-banner-title {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ashram);
+    font-weight: 600;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .ashram-banner-title::before {
+    content: '🪔';
+    font-size: 14px;
+  }
+  .ashram-item {
+    font-size: 13.5px;
+    color: var(--ashram);
+    font-weight: 500;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(92,45,122,0.15);
+    line-height: 1.5;
+  }
+  .ashram-item:last-child { border-bottom: none; }
+
+  /* ── SECTION ── */
+  .section {
+    margin-bottom: 40px;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-icon {
+    width: 28px; height: 28px;
+    background: var(--accent-soft);
+    border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow);
+  }
+  .card-title {
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+
+  /* ── BULLET LIST ── */
+  .blist { list-style: none; }
+  .blist li {
+    font-size: 14px;
+    color: var(--ink-light);
+    padding: 5px 0 5px 18px;
+    position: relative;
+    line-height: 1.55;
+    border-bottom: 1px solid var(--border);
+  }
+  .blist li:last-child { border-bottom: none; }
+  .blist li::before {
+    content: '→';
+    position: absolute; left: 0;
+    color: var(--accent);
+    font-size: 12px;
+    top: 7px;
+  }
+  .blist li strong { color: var(--ink); font-weight: 600; }
+
+  /* ── TIMELINE ── */
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before {
+    content: '';
+    position: absolute; left: 8px; top: 6px; bottom: 6px;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--accent), var(--border));
+    border-radius: 2px;
+  }
+  .tl-item {
+    position: relative;
+    margin-bottom: 20px;
+  }
+  .tl-item::before {
+    content: '';
+    position: absolute;
+    left: -24px; top: 5px;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg);
+    box-shadow: 0 0 0 2px var(--accent);
+  }
+  .tl-item.milestone::before {
+    background: var(--green);
+    box-shadow: 0 0 0 2px var(--green);
+  }
+  .tl-item.warning::before {
+    background: var(--amber);
+    box-shadow: 0 0 0 2px var(--amber);
+  }
+  .tl-date {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 3px;
+  }
+  .tl-item.milestone .tl-date { color: var(--green); }
+  .tl-item.warning .tl-date { color: var(--amber); }
+  .tl-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 3px;
+  }
+  .tl-body {
+    font-size: 13px;
+    color: var(--ink-light);
+    line-height: 1.5;
+  }
+
+  /* ── TABLE ── */
+  .proto-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+  }
+  .proto-table th {
+    background: #1d0a3d;
+    color: #fffdf8;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding: 10px 14px;
+    text-align: left;
+  }
+  .proto-table th:first-child { border-radius: 8px 0 0 0; }
+  .proto-table th:last-child { border-radius: 0 8px 0 0; }
+  .proto-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--ink-light);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  .proto-table tr:last-child td { border-bottom: none; }
+  .proto-table tr:nth-child(even) td { background: #faf7f2; }
+  .proto-table td strong { color: var(--ink); }
+
+  /* ── STATUS GRID ── */
+  .status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+  }
+  .status-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .status-label {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .status-val {
+    font-size: 13.5px;
+    color: var(--ink);
+    font-weight: 500;
+    line-height: 1.4;
+  }
+  .badge {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  .badge-amber { background: var(--amber-bg); color: var(--amber); }
+  .badge-green { background: var(--green-bg); color: var(--green); }
+  .badge-red { background: #fde8e8; color: #c0392b; }
+  .badge-grey { background: #f0ece4; color: var(--ink-faint); }
+
+  /* ── OPEN QS ── */
+  .open-q {
+    background: var(--amber-bg);
+    border: 1px solid #f0d080;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 8px;
+    font-size: 13.5px;
+    color: var(--ink);
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    line-height: 1.5;
+  }
+  .open-q::before { content: '?'; font-weight: 700; color: var(--amber); flex-shrink: 0; }
+
+  /* ── FOOTER ── */
+  .footer {
+    text-align: center;
+    padding: 32px 24px;
+    font-size: 12px;
+    color: var(--ink-faint);
+    border-top: 1px solid var(--border);
+  }
+
+  @media (max-width: 600px) {
+    .header, .stats-row { padding-left: 20px; padding-right: 20px; }
+    .content { padding: 28px 16px 60px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-meta">Paws in Wayanad — Physio Briefing</div>
+  <h1>Plumby</h1>
+  <div class="header-sub">Chat period: August 2025 – April 2026 &nbsp;·&nbsp; For physiotherapy team use only</div>
+</div>
+
+<div class="stats-row">
+  <div class="stat">
+    <div class="stat-label">Sex</div>
+    <div class="stat-value">Female</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">Found</div>
+    <div class="stat-value">~Aug 12, 2025</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">Age (est.)</div>
+    <div class="stat-value">Puppy</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">Weight</div>
+    <div class="stat-value">14.5 kg (Mar)</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">Injury</div>
+    <div class="stat-value">Bilateral fractures</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">Walking</div>
+    <div class="stat-value">Yes, with issues</div>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- ASHRAM GUIDANCE -->
+  <div class="ashram-banner">
+    <div class="ashram-banner-title">From the Ashram / Bhagavan's Guidance</div>
+    <div class="ashram-item"><strong>Tom (Mar 20, 2026):</strong> "Don't think this needs surgery at the moment. Physio will know. Her quadriceps must be strengthened. Slow walk on the leash. Controlled exercise and rest. No extremes. No frenzied games with other dogs or humans. There is a big chance of recovery. This should be followed for six weeks."</div>
+    <div class="ashram-item"><strong>Tom (Mar 20):</strong> "Cage rest at least 18 hours daily. Frenzied activity should be avoided. If she goes into frenzied activity, surgery cannot be avoided."</div>
+    <div class="ashram-item"><strong>Tom (Mar 20):</strong> "Increase Tata Joint Support to 1.5 tablets for 6 weeks. Add Vitamin E 100IU once daily, 1000mg EPA+DHA for six weeks. B complex injections 7 days then oral 2 weeks."</div>
+    <div class="ashram-item"><strong>Uma (Apr 9, 2026):</strong> "Can she be sent to Adarsh as well?" — Specialist consultation requested, pending.</div>
+  </div>
+
+  <!-- DIAGNOSIS -->
+  <div class="section">
+    <div class="section-title"><span class="section-icon">🦴</span> Diagnosis & Injury</div>
+    <div class="card">
+      <div class="card-title">What happened</div>
+      <ul class="blist">
+        <li>Found <strong>August 12, 2025</strong> following hit-and-run road accident as a puppy</li>
+        <li><strong>Bilateral hind leg fractures:</strong> Right hind femur fracture (hip region); left hind tibia/fibula fracture with deep open wound</li>
+        <li>Also diagnosed with <strong>Babesia vogeli</strong> (tick fever) and parasites — critically low blood values (anaemia, low platelets) delayed surgery</li>
+        <li>Conservative management chosen: Thomas splint on right hip; bandaging on left leg; extensive wound care</li>
+        <li>By the time blood values improved, callus had already formed — conventional fracture surgery no longer ideal</li>
+        <li><strong>January 2026:</strong> Left kneecap luxation (patella luxation) identified. X-ray confirmed Grade 1 initially</li>
+        <li><strong>February 2026:</strong> Follow-up X-ray showed patella luxation now Grade 2, with osteoarthritis on right knee</li>
+        <li><strong>Dr Rao (April 2026):</strong> Patella has displaced out of groove; groove flattened; tibial tuberosity shifted outward. <strong>Surgery recommended: TWRS (Tibial Wedge Recession Sulcoplasty)</strong> — deepening groove, repositioning tibial tuberosity with pins, tightening ligaments</li>
+        <li><strong>Dr Nadirshah (Kochi Pet Trust, Apr 21):</strong> Agrees with Rao's assessment. Needs high-quality X-rays (current Vadakara X-rays deemed poor quality)</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="section">
+    <div class="section-title"><span class="section-icon">📅</span> Key History</div>
+    <div class="card">
+      <div class="timeline">
+
+        <div class="tl-item warning">
+          <div class="tl-date">12 Aug 2025</div>
+          <div class="tl-title">Road accident — bilateral fractures + tick fever</div>
+          <div class="tl-body">Found after hit-and-run. Right hip femur fracture; left tibia/fibula fracture with deep open wound. Babesia vogeli positive. Critically low blood values (anaemia, low platelets).</div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-date">13 Aug 2025</div>
+          <div class="tl-title">Emergency transport to CUPA (Bangalore)</div>
+          <div class="tl-body">Wound sutured under local anaesthesia. Thomas splint applied to right hip. Conservative fracture management initiated due to critical blood state.</div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-date">Aug–Sept 2025</div>
+          <div class="tl-title">Tick fever treatment + blood recovery</div>
+          <div class="tl-body">Imidocarb and atropine therapy. Blood values improving. Surgery window passing as callus begins to form.</div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-date">Oct 2025</div>
+          <div class="tl-title">Physio begins — walking attempts</div>
+          <div class="tl-body">Wound healing. Conservative fracture healing. Initial physio for range of motion and gentle mobilisation.</div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-date">Nov 2025</div>
+          <div class="tl-title">Walking improving with limping</div>
+          <div class="tl-body">Hind limb loading increasing but with visible abnormal gait pattern.</div>
+        </div>
+
+        <div class="tl-item warning">
+          <div class="tl-date">14 Jan 2026</div>
+          <div class="tl-title">Patella luxation X-ray — Grade 1</div>
+          <div class="tl-body">Left kneecap luxation confirmed. Pin removal from femur (earlier stabilisation attempt). Osteoarthritis noted.</div>
+        </div>
+
+        <div class="tl-item warning">
+          <div class="tl-date">15 Mar 2026</div>
+          <div class="tl-title">Follow-up X-ray — patella Grade 2</div>
+          <div class="tl-body">Vadakara X-ray: patella luxation now Grade 2. Osteoarthritis on right knee confirmed. Physio not yet formally structured.</div>
+        </div>
+
+        <div class="tl-item milestone">
+          <div class="tl-date">20 Mar 2026</div>
+          <div class="tl-title">Tom's physio directive issued</div>
+          <div class="tl-body">Quadriceps focus. Cage rest 18h/day minimum. Slow leash walks. No frenzied activity. Six-week protocol. Supplements prescribed.</div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-date">21 Mar 2026</div>
+          <div class="tl-title">André Schumacher begins assessment</div>
+          <div class="tl-body">Formal physio assessment begins. Physio plan implementation starts.</div>
+        </div>
+
+        <div class="tl-item warning">
+          <div class="tl-date">9 Apr 2026</div>
+          <div class="tl-title">Right hind leg swelling noted</div>
+          <div class="tl-body">Uma requests Adarsh specialist consultation. Swelling observed in right hind limb — cause under investigation.</div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-date">21 Apr 2026</div>
+          <div class="tl-title">Dr Nadirshah consultation (Kochi)</div>
+          <div class="tl-body">Agrees with Dr Rao on TWRS surgery recommendation. Emphasises need for high-quality X-rays.</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- CURRENT STATUS -->
+  <div class="section">
+    <div class="section-title"><span class="section-icon">📊</span> Current Status (April 2026)</div>
+    <div class="status-grid">
+      <div class="status-item">
+        <div class="status-label">Walking</div>
+        <div class="status-val"><span class="badge badge-amber">Yes, with difficulty</span><br><small style="color:var(--ink-faint);font-size:12px;">Patella pops in/out</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Standing</div>
+        <div class="status-val"><span class="badge badge-amber">Full weight bearing</span><br><small style="color:var(--ink-faint);font-size:12px;">Patella unstable</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Hind limbs</div>
+        <div class="status-val"><span class="badge badge-amber">Muscle weakness</span><br><small style="color:var(--ink-faint);font-size:12px;">Quad focus needed</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Paw placement</div>
+        <div class="status-val"><span class="badge badge-amber">Twisted outward</span><br><small style="color:var(--ink-faint);font-size:12px;">Patella-related</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Right hind swelling</div>
+        <div class="status-val"><span class="badge badge-red">Present (Apr)</span><br><small style="color:var(--ink-faint);font-size:12px;">Painful on palpation</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Bladder</div>
+        <div class="status-val"><span class="badge badge-green">Normal</span><br><small style="color:var(--ink-faint);font-size:12px;">Independent</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Bowel</div>
+        <div class="status-val"><span class="badge badge-green">Normal</span><br><small style="color:var(--ink-faint);font-size:12px;">Independent</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Mood</div>
+        <div class="status-val"><span class="badge badge-red">Very restless</span><br><small style="color:var(--ink-faint);font-size:12px;">Destroys cage; wants to run</small></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CURRENT PHYSIO PROTOCOL -->
+  <div class="section">
+    <div class="section-title"><span class="section-icon">🏃</span> Physio Plan — Quadriceps Strengthening</div>
+    <div class="card" style="padding:0;overflow:hidden;">
+      <table class="proto-table">
+        <thead>
+          <tr>
+            <th>Exercise</th>
+            <th>Frequency</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Sit-to-stands (puppy squats)</strong></td>
+            <td>2× daily</td>
+            <td>Slow, controlled. Builds quadriceps and stifle stability.</td>
+          </tr>
+          <tr>
+            <td><strong>Slow leash walks</strong></td>
+            <td>2× daily, 15–20 min</td>
+            <td>Controlled pace. Sandy/grip surface. No running.</td>
+          </tr>
+          <tr>
+            <td><strong>Uphill walking</strong></td>
+            <td>As able</td>
+            <td>Short inclines. Good for hind limb loading.</td>
+          </tr>
+          <tr>
+            <td><strong>Backward walking</strong></td>
+            <td>2× daily</td>
+            <td>Short distance. Activates quadriceps differently.</td>
+          </tr>
+          <tr>
+            <td><strong>Cage rest</strong></td>
+            <td>18h/day minimum</td>
+            <td>No exceptions. Uncontrolled movement risks surgery unavoidable.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- KEY CONSIDERATIONS -->
+  <div class="section">
+    <div class="section-title"><span class="section-icon">⚠️</span> Key Considerations for Physio</div>
+
+    <div class="card">
+      <div class="card-title">FRENZIED ACTIVITY = SURGICAL TRIGGER</div>
+      <ul class="blist">
+        <li><strong>Every instance of running/jumping worsens the patella</strong> and makes TWRS unavoidable. ALL staff must understand this.</li>
+        <li>She becomes very restless in the cage — ensure controlled outdoor time during calm hours (noon recommended).</li>
+        <li>When outside: <strong>LEASH ONLY.</strong> No off-leash with other dogs. No frenzied games with humans or canines.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Cage rest &amp; confinement</div>
+      <ul class="blist">
+        <li><strong>18 hours cage rest is non-negotiable</strong> per Tom's directive.</li>
+        <li>She becomes very restless in the cage — ensure adequate enrichment and attention during rest periods.</li>
+        <li>Outdoor time must be controlled (leash, supervised movement, no running).</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Right hind leg swelling</div>
+      <ul class="blist">
+        <li>Swelling present as of April 2026 — <strong>avoid touching swollen area during physio.</strong></li>
+        <li>Pain confirmed on palpation. Investigate cause: B-complex injection site reaction, or structural problem.</li>
+        <li>Do not apply compression or manipulation to affected area.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Surface &amp; movement</div>
+      <ul class="blist">
+        <li><strong>Non-slippery surfaces only.</strong> Grip mat or grass preferred.</li>
+        <li>No running, no jumping, no extreme movements.</li>
+        <li>Slow, controlled walks on leash during all outdoor sessions.</li>
+        <li>André to supervise all physio — assess which additional exercises are appropriate.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Supplements &amp; medication</div>
+      <ul class="blist">
+        <li>Tata Joint Support: <strong>1.5 tablets for 6 weeks</strong> (Tom, Mar 20)</li>
+        <li>Vitamin E 100IU: once daily, 6 weeks</li>
+        <li>EPA+DHA: 1000mg, 6 weeks</li>
+        <li>B complex: injections 7 days, then oral 2 weeks</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- OPEN QUESTIONS -->
+  <div class="section">
+    <div class="section-title"><span class="section-icon">💬</span> Open Questions</div>
+    <div class="open-q">Dr Adarsh specialist consultation — when? Uma requested Apr 9.</div>
+    <div class="open-q">Dr Nadirshah said X-rays from Vadakara are inadequate — new quality X-rays needed for surgical planning.</div>
+    <div class="open-q">Is TWRS surgery being planned? Dr Rao and Dr Nadirshah both indicate it is the likely outcome.</div>
+    <div class="open-q">What is the cause of the right leg swelling — B-complex injection site reaction, or structural issue?</div>
+    <div class="open-q">Is quadriceps strengthening showing measurable improvement in patella stability after 4 weeks of Tom's protocol?</div>
+  </div>
+
+</div>
+
+<div class="footer">
+  Paws in Wayanad — Haven &nbsp;·&nbsp; Generated from WhatsApp group chat export &nbsp;·&nbsp; For internal physio team use
+</div>
+
+</body>
+</html>

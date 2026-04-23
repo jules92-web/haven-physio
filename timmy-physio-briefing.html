@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Timmy — Physio Briefing</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7eef0;
+    --card: #fff8f9;
+    --ink: #1a1e1a;
+    --ink-light: #4a5548;
+    --ink-faint: #8a9688;
+    --accent: #c04060;
+    --accent-soft: #f0d8e0;
+    --ashram: #7b3f00;
+    --ashram-bg: #fff3e0;
+    --ashram-border: #e6a85a;
+    --green: #2d6a4f;
+    --green-bg: #d8f3dc;
+    --amber: #b5830a;
+    --amber-bg: #fef9e7;
+    --red-bg: #fde8e8;
+    --red: #c0392b;
+    --border: #dce8dc;
+    --shadow: 0 2px 16px rgba(26,30,26,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .header {
+    background: #2d0a12;
+    color: #f0faf0;
+    padding: 48px 40px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 320px; height: 320px;
+    border-radius: 50%;
+    background: rgba(192,64,96,0.2);
+    pointer-events: none;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: 30%;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: rgba(192,64,96,0.08);
+    pointer-events: none;
+  }
+  .header-meta {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #e898b8;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 5vw, 48px);
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+  .header-sub { color: #b08898; font-size: 13px; }
+
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    padding: 28px 40px;
+    background: #2d0a12;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .stat {
+    background: rgba(255,255,255,0.06);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .stat-label {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a5a6a;
+    margin-bottom: 4px;
+  }
+  .stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    color: #f0faf0;
+    font-weight: 600;
+  }
+
+  .content {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  .ashram-banner {
+    background: var(--ashram-bg);
+    border: 1.5px solid var(--ashram-border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 36px;
+  }
+  .ashram-banner-title {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ashram);
+    font-weight: 600;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .ashram-banner-title::before { content: '🪔'; font-size: 14px; }
+  .ashram-item {
+    font-size: 13.5px;
+    color: var(--ashram);
+    font-weight: 500;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(196,92,26,0.15);
+    line-height: 1.5;
+  }
+  .ashram-item:last-child { border-bottom: none; }
+
+  .section { margin-bottom: 40px; }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-icon {
+    width: 28px; height: 28px;
+    background: var(--accent-soft);
+    border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow);
+  }
+  .card-title {
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+
+  .blist { list-style: none; }
+  .blist li {
+    font-size: 14px;
+    color: var(--ink-light);
+    padding: 5px 0 5px 18px;
+    position: relative;
+    line-height: 1.55;
+    border-bottom: 1px solid var(--border);
+  }
+  .blist li:last-child { border-bottom: none; }
+  .blist li::before {
+    content: '→';
+    position: absolute; left: 0;
+    color: var(--accent);
+    font-size: 12px;
+    top: 7px;
+  }
+  .blist li strong { color: var(--ink); font-weight: 600; }
+
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before {
+    content: '';
+    position: absolute; left: 8px; top: 6px; bottom: 6px;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--accent), var(--border));
+    border-radius: 2px;
+  }
+  .tl-item { position: relative; margin-bottom: 20px; }
+  .tl-item::before {
+    content: '';
+    position: absolute;
+    left: -24px; top: 5px;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg);
+    box-shadow: 0 0 0 2px var(--accent);
+  }
+  .tl-item.milestone::before { background: #2d6a4f; box-shadow: 0 0 0 2px #2d6a4f; }
+  .tl-item.warning::before { background: var(--amber); box-shadow: 0 0 0 2px var(--amber); }
+  .tl-item.cancelled::before { background: var(--red); box-shadow: 0 0 0 2px var(--red); }
+  .tl-date {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 3px;
+  }
+  .tl-item.milestone .tl-date { color: #2d6a4f; }
+  .tl-item.warning .tl-date { color: var(--amber); }
+  .tl-item.cancelled .tl-date { color: var(--red); }
+  .tl-title { font-size: 14px; font-weight: 600; color: var(--ink); margin-bottom: 3px; }
+  .tl-body { font-size: 13px; color: var(--ink-light); line-height: 1.5; }
+
+  .proto-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  .proto-table th {
+    background: #2d0a12;
+    color: #f0faf0;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding: 10px 14px;
+    text-align: left;
+  }
+  .proto-table th:first-child { border-radius: 8px 0 0 0; }
+  .proto-table th:last-child { border-radius: 0 8px 0 0; }
+  .proto-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--ink-light);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  .proto-table tr:last-child td { border-bottom: none; }
+  .proto-table tr:nth-child(even) td { background: #faf5f7; }
+  .proto-table td strong { color: var(--ink); }
+
+  .status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+  }
+  .status-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .status-label {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .status-val { font-size: 13.5px; color: var(--ink); font-weight: 500; line-height: 1.4; }
+  .badge {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  .badge-amber { background: var(--amber-bg); color: var(--amber); }
+  .badge-green { background: var(--green-bg); color: var(--green); }
+  .badge-red { background: var(--red-bg); color: var(--red); }
+
+  /* Phase cards for physio plan */
+  .phases { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 12px; }
+  .phase-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .phase-header {
+    background: var(--accent);
+    color: white;
+    padding: 10px 16px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .phase-body { padding: 14px 16px; }
+  .phase-body li {
+    font-size: 13px;
+    color: var(--ink-light);
+    padding: 3px 0 3px 14px;
+    position: relative;
+    line-height: 1.45;
+  }
+  .phase-body li::before {
+    content: '·';
+    position: absolute; left: 2px;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .phase-body { list-style: none; }
+
+  .open-q {
+    background: var(--amber-bg);
+    border: 1px solid #f0d080;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 8px;
+    font-size: 13.5px;
+    color: var(--ink);
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    line-height: 1.5;
+  }
+  .open-q::before { content: '?'; font-weight: 700; color: var(--amber); flex-shrink: 0; }
+
+  .warning-box {
+    background: #fff8e8;
+    border: 1.5px solid #f0c060;
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 10px;
+    font-size: 13.5px;
+    color: #5a4010;
+    line-height: 1.5;
+  }
+  .warning-box strong { color: #3a2800; }
+
+  .footer {
+    text-align: center;
+    padding: 32px 24px;
+    font-size: 12px;
+    color: var(--ink-faint);
+    border-top: 1px solid var(--border);
+  }
+
+  @media (max-width: 600px) {
+    .header, .stats-row { padding-left: 20px; padding-right: 20px; }
+    .content { padding: 28px 16px 60px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-meta">Paws in Wayanad — Physio Briefing</div>
+  <h1>Timmy</h1>
+  <div class="header-sub">Chat period: October 2025 – April 2026 &nbsp;·&nbsp; For physiotherapy team use only</div>
+</div>
+
+<div class="stats-row">
+  <div class="stat"><div class="stat-label">Sex</div><div class="stat-value">Male</div></div>
+  <div class="stat"><div class="stat-label">Age at rescue</div><div class="stat-value">~5 months</div></div>
+  <div class="stat"><div class="stat-label">Weight (post-op)</div><div class="stat-value">Recovering</div></div>
+  <div class="stat"><div class="stat-label">Injury</div><div class="stat-value">Spinal fracture</div></div>
+  <div class="stat"><div class="stat-label">Surgery</div><div class="stat-value">Oct 21, 2025</div></div>
+  <div class="stat"><div class="stat-label">Cord damage</div><div class="stat-value">1/3 tear (partial)</div></div>
+</div>
+
+<div class="content">
+
+  <!-- ASHRAM GUIDANCE -->
+  <div class="ashram-banner">
+    <div class="ashram-banner-title">From the Ashram / Bhagavan's Guidance</div>
+    <div class="ashram-item"><strong>Uma (Oct 18, 2025):</strong> "The torn spinal cord will not heal... This is disastrous message though." — on CT findings regarding the 1/3 partial cord tear.</div>
+    <div class="ashram-item"><strong>Uma (Oct 19, 2025):</strong> "Bhagavan is not giving an answer it seems. Decision is yours darlings." — regarding surgical intervention decision.</div>
+    <div class="ashram-item"><strong>Uma (Oct 17, 2025):</strong> "That's not very good having to be sedated. Is CT scan really necessary?" — questioning sedation risks for imaging.</div>
+    <div class="ashram-item"><strong>Uma (cost negotiation):</strong> "Can he give us more discount? Did you clearly tell him that we are seriously struggling?" — directed cost negotiation for surgery.</div>
+    <div class="ashram-item"><strong>Post-surgery:</strong> Uma and Tom did not issue specific physio directives — Cessna surgical team's protocol was followed.</div>
+  </div>
+
+  <!-- DIAGNOSIS -->
+  <div class="section">
+    <div class="section-title"><span class="section-icon">🦴</span> Diagnosis & Injury</div>
+    <div class="card">
+      <div class="card-title">What happened</div>
+      <ul class="blist">
+        <li><strong>Hit-and-run trauma:</strong> October 2025. Male puppy (~5 months old at rescue). Severe spinal fracture with partial spinal cord tear.</li>
+        <li><strong>CT scan (Oct 17–18, 2025):</strong> Severe vertebral compression with displacement. <strong>1/3 of spinal cord partially torn</strong> — the torn portion will NOT recover.</li>
+        <li>Significant cord compression by fractured and displaced bone fragments.</li>
+        <li><strong>Haemoglobin:</strong> 9.3 g/dL initially (low). Bernil injection administered to address anaemia.</li>
+        <li><strong>Secondary injury:</strong> Hairline hip fracture — healing naturally without surgery.</li>
+        <li><strong>Surgical prognosis:</strong> 50/50 outcome; deep pain reflex testing showed 60–90% chance of post-surgical walking recovery.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Surgical decision & procedure</div>
+      <ul class="blist">
+        <li><strong>Surgery date:</strong> October 21, 2025 at Dr Rao's clinic.</li>
+        <li><strong>Procedure:</strong> Spinal decompression and stabilisation with plates and screws.</li>
+        <li><strong>Cost:</strong> 27,000 Rs (discounted from 29,000 Rs; private alternatives quoted 80,000 Rs).</li>
+        <li>Despite the grim prognosis of the 1/3 cord tear, deep pain responses pre-surgery suggested some neurological potential post-operatively.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="section">
+    <div class="section-title"><span class="section-icon">📅</span> Key History</div>
+    <div class="card">
+      <div class="timeline">
+
+        <div class="tl-item warning">
+          <div class="tl-date">October 16, 2025</div>
+          <div class="tl-title">CT scan ordered — dog at Dr Rao's clinic</div>
+          <div class="tl-body">Post-accident assessment. Imaging to determine extent of spinal injury.</div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-date">October 17, 2025</div>
+          <div class="tl-title">Brought to Bangalore for CT imaging</div>
+          <div class="tl-body">Dog sedated for CT scan. Haemoglobin checked: 9.3 g/dL (low). Uma questioned necessity of sedation given risks.</div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-date">October 18, 2025</div>
+          <div class="tl-title">CT report: severe compression, 1/3 cord partially torn</div>
+          <div class="tl-body">Findings: severe vertebral compression with displacement, 1/3 of spinal cord partially torn (non-recoverable), significant cord compression. Surgical decision confirmed necessary.</div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-date">October 19, 2025</div>
+          <div class="tl-title">Surgery decided — Dr Rao, 27,000 Rs</div>
+          <div class="tl-body">Surgical intervention approved. Cost negotiated by Uma. Deep pain reflex testing suggested 60–90% potential for post-op walking recovery despite dire prognosis.</div>
+        </div>
+
+        <div class="tl-item milestone">
+          <div class="tl-date">October 21, 2025</div>
+          <div class="tl-title">Surgery completed</div>
+          <div class="tl-body">Spinal decompression and stabilisation with plates and screws performed by Dr Rao.</div>
+        </div>
+
+        <div class="tl-item milestone">
+          <div class="tl-date">Post-op Oct–Nov 2025</div>
+          <div class="tl-title">Post-surgical rehabilitation begins</div>
+          <div class="tl-body">Cessna surgical team protocol implemented: PROM 3× daily (15 reps each leg), cycling 4× daily, bladder expression, toe stimulation, ongoing massage, non-slip mat in room.</div>
+        </div>
+
+        <div class="tl-item warning">
+          <div class="tl-date">November 2025</div>
+          <div class="tl-title">Pain during bladder expression noted</div>
+          <div class="tl-body">Possible Upper Motor Neuron (UMN) bladder indicated. Pain gradually improving with continued expression.</div>
+        </div>
+
+        <div class="tl-item milestone">
+          <div class="tl-date">March 2026</div>
+          <div class="tl-title">Walking significantly improving</div>
+          <div class="tl-body">Doesn't knuckle, or self-corrects with next step. Good standing grip on outdoor surfaces. Can stand up multiple times. Coordination improving steadily.</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- PHYSIO PLAN -->
+  <div class="section">
+    <div class="section-title"><span class="section-icon">📋</span> Prescribed Physio Plan (Cessna Protocol / Dr Rao)</div>
+
+    <div class="card" style="padding:0;overflow:hidden;">
+      <table class="proto-table">
+        <thead>
+          <tr>
+            <th>Exercise</th>
+            <th>Frequency</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>PROM (hind limbs)</strong></td>
+            <td>3× daily</td>
+            <td>15 reps each leg. Gentle cycling motion. Note any tightness — inward twisting on cycling movement can occur. Continue gently.</td>
+          </tr>
+          <tr>
+            <td><strong>Cycling exercise</strong></td>
+            <td>4× daily</td>
+            <td>Can do lying on side or in assisted standing when able.</td>
+          </tr>
+          <tr>
+            <td><strong>Toe stimulation</strong></td>
+            <td>Every handling</td>
+            <td>Pinch/stimulate toes to activate reflexes. Note any response or pain.</td>
+          </tr>
+          <tr>
+            <td><strong>Bladder expression</strong></td>
+            <td>Every 6–8h if not voiding</td>
+            <td>Monitor for pain during expression (UMN bladder sign). SOS Prazosin if confirmed painful.</td>
+          </tr>
+          <tr>
+            <td><strong>Assisted standing</strong></td>
+            <td>At every meal</td>
+            <td>Use food motivation. Guide body into standing position.</td>
+          </tr>
+          <tr>
+            <td><strong>Non-slip mat</strong></td>
+            <td>Always in room</td>
+            <td>Prevents slipping and builds confidence in movement. Essential for indoor mobility.</td>
+          </tr>
+          <tr>
+            <td><strong>Outdoor leash walks</strong></td>
+            <td>When able</td>
+            <td>Good grip surface (dirt/grass) essential. Knuckling less on outdoor surfaces.</td>
+          </tr>
+          <tr>
+            <td><strong>Massage</strong></td>
+            <td>Ongoing</td>
+            <td>Gentle massage of hind limbs and back to support circulation and reduce stiffness.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- CURRENT STATUS -->
+  <div class="section">
+    <div class="section-title"><span class="section-icon">📊</span> Current Status (March 2026)</div>
+    <div class="status-grid">
+      <div class="status-item">
+        <div class="status-label">Walking</div>
+        <div class="status-val"><span class="badge badge-green">Improving</span><br><small style="color:var(--ink-faint);font-size:12px;">Self-corrects knuckling; coordination improving</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Standing</div>
+        <div class="status-val"><span class="badge badge-green">Good</span><br><small style="color:var(--ink-faint);font-size:12px;">Multiple times daily; good grip outdoors</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Hind limbs</div>
+        <div class="status-val"><span class="badge badge-green">Functional</span><br><small style="color:var(--ink-faint);font-size:12px;">Movement returning; some residual weakness</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Deep pain</div>
+        <div class="status-val"><span class="badge badge-green">Present ✓</span><br><small style="color:var(--ink-faint);font-size:12px;">Pre-surgery positive response</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Bladder</div>
+        <div class="status-val"><span class="badge badge-amber">Improving</span><br><small style="color:var(--ink-faint);font-size:12px;">Pain during expression resolving</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Bowel</div>
+        <div class="status-val"><span class="badge badge-green">Independent</span><br><small style="color:var(--ink-faint);font-size:12px;">Stooling on own; consistency managed</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Pain meds</div>
+        <div class="status-val"><span class="badge badge-green">None needed</span><br><small style="color:var(--ink-faint);font-size:12px;">Post-surgical pain resolved</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Mood</div>
+        <div class="status-val"><span class="badge badge-green">Sweet & alert</span><br><small style="color:var(--ink-faint);font-size:12px;">Good appetite; responsive; calm</small></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KEY CONSIDERATIONS -->
+  <div class="section">
+    <div class="section-title"><span class="section-icon">⚠️</span> Key Considerations for Physio</div>
+
+    <div class="warning-box">
+      <strong>Critical note on cord damage:</strong> 1/3 of spinal cord is permanently torn — this partial deficit is non-recoverable. The functional ceiling for independence is unknown, but he is progressing well beyond initial pessimistic prognosis.
+    </div>
+
+    <div class="card">
+      <div class="card-title">Walking & movement</div>
+      <ul class="blist">
+        <li><strong>Knuckling:</strong> Monitor during walks and gently correct. Outdoor surfaces (dirt/grass) help enormously — he knuckles less outside.</li>
+        <li>He tires quickly during walking — build endurance gradually. Short sessions, more frequently, rather than long single sessions.</li>
+        <li><strong>Non-slip mat essential indoors</strong> — slippery floors undermine his progress and confidence.</li>
+        <li>Cycling exercise: note inward twisting on some legs during PROM — this is normal; continue gently.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Bladder & bowel</div>
+      <ul class="blist">
+        <li>Monitor for pain during bladder expression — if painful, Upper Motor Neuron (UMN) bladder may be present and Prazosin SOS may be needed.</li>
+        <li>Pain during expression improving — continue monitoring and note trends.</li>
+        <li>Bowel function normalising; stool consistency manageable.</li>
+        <li>Note any sudden changes in voiding patterns or difficulty with expression.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Handling & temperament</div>
+      <ul class="blist">
+        <li>Sweet and calm patient — sessions should be manageable and low-stress.</li>
+        <li><strong>Good appetite</strong> makes him food-motivated — use treats to encourage standing and movement.</li>
+        <li>Very responsive and alert — engage with positive reinforcement during physio sessions.</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- OPEN QUESTIONS -->
+  <div class="section">
+    <div class="section-title"><span class="section-icon">💬</span> Open Questions</div>
+    <div class="open-q">Long-term prognosis: will he achieve fully independent walking given the 1/3 spinal cord tear?</div>
+    <div class="open-q">Bladder: is he fully independent now, or still requiring regular expression?</div>
+    <div class="open-q">When can indoor/outdoor movement be fully free without leash restriction?</div>
+    <div class="open-q">Would a formal reassessment by Durga or André be valuable at this stage?</div>
+    <div class="open-q">Has hydrotherapy been attempted or considered? Could benefit early recovery.</div>
+  </div>
+
+</div>
+
+<div class="footer">
+  Paws in Wayanad — Haven &nbsp;·&nbsp; Generated from WhatsApp group chat export &nbsp;·&nbsp; For internal physio team use
+</div>
+
+</body>
+</html>

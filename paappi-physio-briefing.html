@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paappi — Physio Briefing</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #eef1f7;
+    --card: #f8f9ff;
+    --ink: #1a1e1a;
+    --ink-light: #4a5548;
+    --ink-faint: #8a9688;
+    --accent: #4a7ec8;
+    --accent-soft: #d0dff5;
+    --ashram: #7b3f00;
+    --ashram-bg: #fff3e0;
+    --ashram-border: #e6a85a;
+    --green: #2d6a4f;
+    --green-bg: #d8f3dc;
+    --amber: #b5830a;
+    --amber-bg: #fef9e7;
+    --red-bg: #fde8e8;
+    --red: #c0392b;
+    --border: #d5dde8;
+    --shadow: 0 2px 16px rgba(26,30,26,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .header {
+    background: #0f1d3d;
+    color: #f0faf0;
+    padding: 48px 40px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 320px; height: 320px;
+    border-radius: 50%;
+    background: rgba(74,126,200,0.2);
+    pointer-events: none;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: 30%;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: rgba(74,126,200,0.08);
+    pointer-events: none;
+  }
+  .header-meta {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #7a9ece;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 5vw, 48px);
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+  .header-sub { color: #6a7a9a; font-size: 13px; }
+
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    padding: 28px 40px;
+    background: #0f1d3d;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .stat {
+    background: rgba(255,255,255,0.06);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .stat-label {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #6a7a9a;
+    margin-bottom: 4px;
+  }
+  .stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    color: #f0faf0;
+    font-weight: 600;
+  }
+
+  .content {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  .ashram-banner {
+    background: var(--ashram-bg);
+    border: 1.5px solid var(--ashram-border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 36px;
+  }
+  .ashram-banner-title {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ashram);
+    font-weight: 600;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .ashram-banner-title::before { content: '🪔'; font-size: 14px; }
+  .ashram-item {
+    font-size: 13.5px;
+    color: var(--ashram);
+    font-weight: 500;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(196,92,26,0.15);
+    line-height: 1.5;
+  }
+  .ashram-item:last-child { border-bottom: none; }
+
+  .section { margin-bottom: 40px; }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-icon {
+    width: 28px; height: 28px;
+    background: var(--accent-soft);
+    border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow);
+  }
+  .card-title {
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+
+  .blist { list-style: none; }
+  .blist li {
+    font-size: 14px;
+    color: var(--ink-light);
+    padding: 5px 0 5px 18px;
+    position: relative;
+    line-height: 1.55;
+    border-bottom: 1px solid var(--border);
+  }
+  .blist li:last-child { border-bottom: none; }
+  .blist li::before {
+    content: '→';
+    position: absolute; left: 0;
+    color: var(--accent);
+    font-size: 12px;
+    top: 7px;
+  }
+  .blist li strong { color: var(--ink); font-weight: 600; }
+
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before {
+    content: '';
+    position: absolute; left: 8px; top: 6px; bottom: 6px;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--accent), var(--border));
+    border-radius: 2px;
+  }
+  .tl-item { position: relative; margin-bottom: 20px; }
+  .tl-item::before {
+    content: '';
+    position: absolute;
+    left: -24px; top: 5px;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg);
+    box-shadow: 0 0 0 2px var(--accent);
+  }
+  .tl-item.milestone::before { background: #1a7a4a; box-shadow: 0 0 0 2px #1a7a4a; }
+  .tl-item.warning::before { background: var(--amber); box-shadow: 0 0 0 2px var(--amber); }
+  .tl-item.cancelled::before { background: var(--red); box-shadow: 0 0 0 2px var(--red); }
+  .tl-date {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 3px;
+  }
+  .tl-item.milestone .tl-date { color: #1a7a4a; }
+  .tl-item.warning .tl-date { color: var(--amber); }
+  .tl-item.cancelled .tl-date { color: var(--red); }
+  .tl-title { font-size: 14px; font-weight: 600; color: var(--ink); margin-bottom: 3px; }
+  .tl-body { font-size: 13px; color: var(--ink-light); line-height: 1.5; }
+
+  .proto-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  .proto-table th {
+    background: #0f1d3d;
+    color: #f0faf0;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding: 10px 14px;
+    text-align: left;
+  }
+  .proto-table th:first-child { border-radius: 8px 0 0 0; }
+  .proto-table th:last-child { border-radius: 0 8px 0 0; }
+  .proto-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--ink-light);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  .proto-table tr:last-child td { border-bottom: none; }
+  .proto-table tr:nth-child(even) td { background: #f2f4fa; }
+  .proto-table td strong { color: var(--ink); }
+
+  .status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+  }
+  .status-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .status-label {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .status-val { font-size: 13.5px; color: var(--ink); font-weight: 500; line-height: 1.4; }
+  .badge {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  .badge-amber { background: var(--amber-bg); color: var(--amber); }
+  .badge-green { background: var(--green-bg); color: var(--green); }
+  .badge-red { background: var(--red-bg); color: var(--red); }
+
+  /* Phase cards for physio plan */
+  .phases { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 12px; }
+  .phase-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .phase-header {
+    background: var(--accent);
+    color: white;
+    padding: 10px 16px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .phase-body { padding: 14px 16px; }
+  .phase-body li {
+    font-size: 13px;
+    color: var(--ink-light);
+    padding: 3px 0 3px 14px;
+    position: relative;
+    line-height: 1.45;
+  }
+  .phase-body li::before {
+    content: '·';
+    position: absolute; left: 2px;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .phase-body { list-style: none; }
+
+  .open-q {
+    background: var(--amber-bg);
+    border: 1px solid #f0d080;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 8px;
+    font-size: 13.5px;
+    color: var(--ink);
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    line-height: 1.5;
+  }
+  .open-q::before { content: '?'; font-weight: 700; color: var(--amber); flex-shrink: 0; }
+
+  .warning-box {
+    background: #fff8e8;
+    border: 1.5px solid #f0c060;
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 10px;
+    font-size: 13.5px;
+    color: #5a4010;
+    line-height: 1.5;
+  }
+  .warning-box strong { color: #3a2800; }
+
+  .footer {
+    text-align: center;
+    padding: 32px 24px;
+    font-size: 12px;
+    color: var(--ink-faint);
+    border-top: 1px solid var(--border);
+  }
+
+  @media (max-width: 600px) {
+    .header, .stats-row { padding-left: 20px; padding-right: 20px; }
+    .content { padding: 28px 16px 60px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-meta">Paws in Wayanad — Physio Briefing</div>
+  <h1>Paappi</h1>
+  <div class="header-sub">Chat period: November 2025 – April 2026 &nbsp;·&nbsp; For physiotherapy team use only</div>
+</div>
+
+<div class="stats-row">
+  <div class="stat"><div class="stat-label">Sex</div><div class="stat-value">Female</div></div>
+  <div class="stat"><div class="stat-label">Age</div><div class="stat-value">~11 months (Apr 2026)</div></div>
+  <div class="stat"><div class="stat-label">Weight</div><div class="stat-value">~11.3 kg (Apr 2026)</div></div>
+  <div class="stat"><div class="stat-label">Injury</div><div class="stat-value">Spinal cord injury</div></div>
+  <div class="stat"><div class="stat-label">Surgery</div><div class="stat-value">Spinal surgery, Nov 27</div></div>
+  <div class="stat"><div class="stat-label">Prognosis</div><div class="stat-value">Guarded (5–6 months)</div></div>
+</div>
+
+<div class="content">
+
+  <!-- ASHRAM GUIDANCE -->
+  <div class="ashram-banner">
+    <div class="ashram-banner-title">From the Ashram / Clinical Guidance</div>
+    <div class="ashram-item">Uma (Feb 28, 2026): Asked about Paappi's walking progress — regular progress reports expected. Ongoing monitoring of recovery trajectory.</div>
+    <div class="ashram-item">Uma: Confirmed the Paappi physio plan is aligned with Durga's guidelines. Plan approved and consistent with spinal cord injury recovery protocols.</div>
+    <div class="ashram-item">Durga (Jan 18, 2026): Formal physio assessment completed. Full protocol issued. Expected recovery period: 5–6 months minimum.</div>
+  </div>
+
+  <!-- DIAGNOSIS -->
+  <div class="section">
+    <div class="section-title"><span class="section-icon">🦴</span> Diagnosis & Injury History</div>
+    <div class="card">
+      <div class="card-title">Arrival and pre-surgery status</div>
+      <ul class="blist">
+        <li>Arrived Nov 25, 2025 from Thalassery — referred via Dr Sai. <strong>Injury from dog attack</strong> at home while paralysed for weeks without care.</li>
+        <li>On arrival: weight 5.5 kg (severely underweight). Immobile and without treatment.</li>
+        <li><strong>Spinal cord injury</strong> confirmed. CT scan done Nov 25 at Bangalore.</li>
+        <li><strong>Deep pain sensation: ABSENT before surgery</strong> — Dr Anvitha noted this gives a reduced prognosis for recovery.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">Surgery and post-op findings</div>
+      <ul class="blist">
+        <li>Spinal surgery performed by Dr Rao around Nov 27–28, 2025 in Bangalore.</li>
+        <li>Post-op: Sutures and bandage applied. Sutures removed Dec 7.</li>
+        <li>Dec 5, 2025: <strong>Bicycle-like movement with hind legs when lifted</strong> — indicates some motor pathway activity is returning.</li>
+        <li>André (physio): Noted she does not cause bone injury to herself from dragging, suggesting retained protective sensation despite deep pain loss.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="section">
+    <div class="section-title"><span class="section-icon">📅</span> Key History & Recovery Timeline</div>
+    <div class="card">
+      <div class="timeline">
+
+        <div class="tl-item">
+          <div class="tl-date">Pre-Nov 25</div>
+          <div class="tl-title">Dog attack and paralysis</div>
+          <div class="tl-body">Injured by dog attack at home; paralysed for weeks without veterinary care. Severely malnourished before arrival.</div>
+        </div>
+
+        <div class="tl-item milestone">
+          <div class="tl-date">Nov 25, 2025</div>
+          <div class="tl-title">Arrival at Haven</div>
+          <div class="tl-body">Transferred from Thalassery via Dr Sai. Weight: 5.5 kg. CT scan in Bangalore same night. Non-ambulatory, unable to support weight.</div>
+        </div>
+
+        <div class="tl-item milestone">
+          <div class="tl-date">Nov 27–28, 2025</div>
+          <div class="tl-title">Spinal surgery by Dr Rao</div>
+          <div class="tl-body">Surgery performed in Bangalore. Sutures and bandage applied post-op. Spinal cord injury addressed surgically.</div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-date">Dec 5, 2025</div>
+          <div class="tl-title">Bicycle-like leg movement observed</div>
+          <div class="tl-body">When lifted, hind legs show cycling movement — early neurological recovery sign. Suggests motor pathways beginning to recover.</div>
+        </div>
+
+        <div class="tl-item milestone">
+          <div class="tl-date">Dec 7, 2025</div>
+          <div class="tl-title">Sutures removed</div>
+          <div class="tl-body">Sutures removed (confirmed by Dr Rao). Top surgical wounds healed.</div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-date">Dec 14, 2025</div>
+          <div class="tl-title">E-collar free; wounds healed</div>
+          <div class="tl-body">E-collar removed. Top surgical wounds fully healed. Cage rest continues.</div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-date">Dec 16, 2025</div>
+          <div class="tl-title">TENS unit discussion — safety limits</div>
+          <div class="tl-body">André clarified: safe on legs peripherally only. Do NOT use next to spine post-surgery.</div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-date">Jan 5, 2026</div>
+          <div class="tl-title">Guardian update — energetic but difficult</div>
+          <div class="tl-body">Energetic but hard to handle during physio. Assisted standing during meals noted. Muscles gathering strength.</div>
+        </div>
+
+        <div class="tl-item milestone">
+          <div class="tl-date">Jan 8, 2026</div>
+          <div class="tl-title">Cage rest period concludes (6 weeks)</div>
+          <div class="tl-body">6-week strict cage rest period ends. Can transition to controlled room movements.</div>
+        </div>
+
+        <div class="tl-item milestone">
+          <div class="tl-date">Jan 18, 2026</div>
+          <div class="tl-title">Durga formal assessment — full protocol issued</div>
+          <div class="tl-body">Durga full physio assessment. Left hind leg/paw weakness noted — due to muscle weakness, will improve with consistent exercise. 5–6 month recovery expected.</div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-date">Jan 28, 2026</div>
+          <div class="tl-title">Durga follow-up — grip surface emphasis</div>
+          <div class="tl-body">Left hind leg/paw weakness to be addressed with grip mats and sand. No smooth floors. Use treats during standing.</div>
+        </div>
+
+        <div class="tl-item milestone">
+          <div class="tl-date">Feb 28, 2026</div>
+          <div class="tl-title">Uma asks about walking progress</div>
+          <div class="tl-body">Uma requests update on walking. Helis: muscles gathering strength, can stand longer. Assisted walking with rolling stand started.</div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-date">Mar 4, 2026</div>
+          <div class="tl-title">Weight progress — deworming</div>
+          <div class="tl-body">Weight: 10.1 kg (up from 5.5 kg on arrival). Deworming round 1 completed.</div>
+        </div>
+
+        <div class="tl-item warning">
+          <div class="tl-date">Apr 11, 2026</div>
+          <div class="tl-title">In heat — vulva swollen</div>
+          <div class="tl-body">Vulva swollen, bloody discharge noted. Heat cycle active. Monitor for behaviour changes and hygiene.</div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-date">Apr 19, 2026</div>
+          <div class="tl-title">Current weight and deworming</div>
+          <div class="tl-body">Weight: 11.3 kg (excellent recovery progress). Deworming: Easy-Pet Day 0 on Apr 16, Day 14 due Apr 30.</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- PHYSIO PLAN -->
+  <div class="section">
+    <div class="section-title"><span class="section-icon">📋</span> Prescribed Physio Plan (Durga, Jan 18, 2026)</div>
+
+    <div class="phases">
+      <div class="phase-card">
+        <div class="phase-header">Phase 1 — Sling Standing</div>
+        <ul class="phase-body">
+          <li>Sling under belly, 10–15 min standing</li>
+          <li>Spine must be straight throughout</li>
+          <li>Brush or rub thighs while standing</li>
+          <li>Guide knees INWARD constantly</li>
+        </ul>
+      </div>
+      <div class="phase-card">
+        <div class="phase-header">Phase 2 — Bladder Prep & Walking</div>
+        <ul class="phase-body">
+          <li>Always empty bladder BEFORE exercise</li>
+          <li>Sling walk: very slow on grip/sand</li>
+          <li>Place front paws on thick book/box</li>
+          <li>Prevent fast dragging; correct steps only</li>
+        </ul>
+      </div>
+      <div class="phase-card">
+        <div class="phase-header">Phase 3 — Hydrotherapy</div>
+        <ul class="phase-body">
+          <li>Cycling exercise in water</li>
+          <li>Slow supported steps in water</li>
+          <li>Can also do lying on side</li>
+          <li>No fast movement; controlled only</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card" style="padding:0;overflow:hidden;">
+      <table class="proto-table">
+        <thead>
+          <tr>
+            <th>Exercise / Protocol</th>
+            <th>Frequency / Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Sling standing</strong></td>
+            <td>2× daily, 10–15 min. Keep spine straight. Rub thighs. Guide knees inward throughout. Use treats.</td>
+          </tr>
+          <tr>
+            <td><strong>Sling walk (slow)</strong></td>
+            <td>2× daily. Grip mat or sand surface. Very slow. Correct steps only — no fast dragging.</td>
+          </tr>
+          <tr>
+            <td><strong>Cycling exercise</strong></td>
+            <td>In water (hydrotherapy). Slow, controlled leg cycles. Can also do lying on side out of water.</td>
+          </tr>
+          <tr>
+            <td><strong>Front paw elevation</strong></td>
+            <td>During standing. Front paws on raised surface (book/box) 30 sec — activates hind limb loading.</td>
+          </tr>
+          <tr>
+            <td><strong>Bladder expression</strong></td>
+            <td>Before every session. Empty fully before exercise so movement is uninhibited.</td>
+          </tr>
+          <tr>
+            <td><strong>Laser therapy</strong></td>
+            <td>Ongoing. On spine and hind legs. Post-op protocol per Dr Rao.</td>
+          </tr>
+          <tr>
+            <td><strong>TENS unit</strong></td>
+            <td>Legs ONLY (not spine). André note: do NOT use near spinal surgery site. Peripheral leg use only.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- CURRENT STATUS -->
+  <div class="section">
+    <div class="section-title"><span class="section-icon">📊</span> Current Status (April 2026)</div>
+    <div class="status-grid">
+      <div class="status-item">
+        <div class="status-label">Walking</div>
+        <div class="status-val"><span class="badge badge-red">Not yet</span><br><small style="color:var(--ink-faint);font-size:12px;">Drags with occasional partial lift</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Standing</div>
+        <div class="status-val"><span class="badge badge-amber">Short periods</span><br><small style="color:var(--ink-faint);font-size:12px;">With sling support; improving</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Hind Limb Movement</div>
+        <div class="status-val"><span class="badge badge-amber">Bicycle cycle</span><br><small style="color:var(--ink-faint);font-size:12px;">When lifted; strength building</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Deep Pain Sensation</div>
+        <div class="status-val"><span class="badge badge-red">Absent pre-op</span><br><small style="color:var(--ink-faint);font-size:12px;">Concerning prognosis per Dr Anvitha</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Left Hind Paw</div>
+        <div class="status-val"><span class="badge badge-amber">Weak</span><br><small style="color:var(--ink-faint);font-size:12px;">Requires grip surfaces and sand</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Bladder Control</div>
+        <div class="status-val"><span class="badge badge-amber">Some control</span><br><small style="color:var(--ink-faint);font-size:12px;">May poop when taken out</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Mood & Energy</div>
+        <div class="status-val"><span class="badge badge-red">Extremely energetic</span><br><small style="color:var(--ink-faint);font-size:12px;">Hard to contain; difficulty during physio</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Heat Cycle</div>
+        <div class="status-val"><span class="badge badge-amber">In heat (April)</span><br><small style="color:var(--ink-faint);font-size:12px;">Swollen vulva, bloody discharge</small></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KEY CONSIDERATIONS -->
+  <div class="section">
+    <div class="section-title"><span class="section-icon">⚠️</span> Key Considerations for Physio</div>
+
+    <div class="warning-box">
+      <strong>Handling & containment critical:</strong> This dog is VERY energetic and difficult to handle during physio. Use containment methods (hammock suggested by Jayanti, or collar for control). One person to contain, one to do physio. <strong>Trim nails regularly</strong> — she has drawn blood from physio team members.
+    </div>
+
+    <div class="card">
+      <div class="card-title">Energy management & safety</div>
+      <ul class="blist">
+        <li>Extremely energetic and lively — wants to run and jump despite paralysis.</li>
+        <li>Difficult to manage during physio sessions — needs two people (one containment, one physio).</li>
+        <li>Trim nails regularly to prevent injury to handlers — she has drawn blood when excited.</li>
+        <li>Use containment: hammock or collar for control during exercises.</li>
+        <li>Keep sessions calm and controlled despite her high energy.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Muscle weakness & surfaces</div>
+      <ul class="blist">
+        <li><strong>Left hind leg/paw especially weak</strong> — Durga noted this will improve with consistent exercise.</li>
+        <li><strong>Use grip mats and sand exclusively</strong> — never smooth flooring. Slippery surfaces cause falls and setbacks.</li>
+        <li>Do not allow fast dragging — only slow, supported, corrected steps.</li>
+        <li>Guide knees INWARD during standing — she tends to splay legs outward.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Bladder & bowel protocol</div>
+      <ul class="blist">
+        <li><strong>Empty bladder before EVERY session</strong> via manual expression or outdoor time.</li>
+        <li>Poop typically happens when taken outside — encourage this to reduce cage soiling.</li>
+        <li>Uninhibited movement requires empty bladder — full bladder impedes leg function.</li>
+        <li>Monitor for any signs of infection or discomfort; record any changes.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Prognosis & expectations</div>
+      <ul class="blist">
+        <li><strong>Prognosis is guarded</strong> due to absent pre-surgical deep pain sensation (Dr Anvitha's concern).</li>
+        <li>Expected recovery period: 5–6 months minimum per Durga assessment (Jan 18, 2026).</li>
+        <li>She does not self-injure from dragging — retained protective sensation present.</li>
+        <li>Recovery is slow but steady — continued consistent physio is essential.</li>
+        <li>Weight gain excellent (5.5 kg to 11.3 kg in 5 months) — supports overall recovery.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Heat cycle & spaying</div>
+      <ul class="blist">
+        <li>Currently in heat (April 2026) — swollen vulva and bloody discharge noted.</li>
+        <li>Monitor behaviour for changes during estrus cycle.</li>
+        <li>Will likely recommend spaying after recovery period is complete (consult Dr Rao/Uma).</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- OPEN QUESTIONS -->
+  <div class="section">
+    <div class="section-title"><span class="section-icon">💬</span> Open Questions</div>
+    <div class="open-q">Is TENS unit on legs (peripheral only) being implemented? André cleared this as safe if not near spine.</div>
+    <div class="open-q">Has hydrotherapy (cycling in water) begun? This could accelerate hind limb recovery.</div>
+    <div class="open-q">Deep pain sensation: when was this last formally reassessed post-surgery? Any change from absent baseline?</div>
+    <div class="open-q">What is the current physio frequency per day — Durga prescribed 2× daily minimum. Is this being maintained?</div>
+    <div class="open-q">Will spaying be scheduled after recovery period? Current heat cycle and future reproductive management?</div>
+    <div class="open-q">Timeline to expected walking? Current estimate: 1–2 months more of intensive physio based on progress to date?</div>
+  </div>
+
+</div>
+
+<div class="footer">
+  Paws in Wayanad — Haven &nbsp;·&nbsp; Generated from WhatsApp group chat export &nbsp;·&nbsp; For internal physio team use
+</div>
+
+</body>
+</html>

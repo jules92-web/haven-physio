@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lumbi — Physio Briefing</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #eef5f7;
+    --card: #f8fdff;
+    --ink: #1a1e1a;
+    --ink-light: #4a5548;
+    --ink-faint: #8a9688;
+    --accent: #2aa8c8;
+    --accent-soft: #d0eef7;
+    --ashram: #7b3f00;
+    --ashram-bg: #fff3e0;
+    --ashram-border: #e6a85a;
+    --green: #2d6a4f;
+    --green-bg: #d8f3dc;
+    --amber: #b5830a;
+    --amber-bg: #fef9e7;
+    --red-bg: #fde8e8;
+    --red: #c0392b;
+    --border: #d0e4ed;
+    --shadow: 0 2px 16px rgba(26,30,26,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .header {
+    background: #0a2830;
+    color: #f0faf0;
+    padding: 48px 40px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 320px; height: 320px;
+    border-radius: 50%;
+    background: rgba(42,168,200,0.2);
+    pointer-events: none;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: 30%;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: rgba(42,168,200,0.08);
+    pointer-events: none;
+  }
+  .header-meta {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #5aa8c8;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 5vw, 48px);
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+  .header-sub { color: #6a8a9a; font-size: 13px; }
+
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    padding: 28px 40px;
+    background: #0a2830;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .stat {
+    background: rgba(255,255,255,0.06);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .stat-label {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #6a8a9a;
+    margin-bottom: 4px;
+  }
+  .stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    color: #f0faf0;
+    font-weight: 600;
+  }
+
+  .content {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  .ashram-banner {
+    background: var(--ashram-bg);
+    border: 1.5px solid var(--ashram-border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 36px;
+  }
+  .ashram-banner-title {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ashram);
+    font-weight: 600;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .ashram-banner-title::before { content: '🪔'; font-size: 14px; }
+  .ashram-item {
+    font-size: 13.5px;
+    color: var(--ashram);
+    font-weight: 500;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(196,92,26,0.15);
+    line-height: 1.5;
+  }
+  .ashram-item:last-child { border-bottom: none; }
+
+  .section { margin-bottom: 40px; }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-icon {
+    width: 28px; height: 28px;
+    background: var(--accent-soft);
+    border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow);
+  }
+  .card-title {
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+
+  .blist { list-style: none; }
+  .blist li {
+    font-size: 14px;
+    color: var(--ink-light);
+    padding: 5px 0 5px 18px;
+    position: relative;
+    line-height: 1.55;
+    border-bottom: 1px solid var(--border);
+  }
+  .blist li:last-child { border-bottom: none; }
+  .blist li::before {
+    content: '→';
+    position: absolute; left: 0;
+    color: var(--accent);
+    font-size: 12px;
+    top: 7px;
+  }
+  .blist li strong { color: var(--ink); font-weight: 600; }
+
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before {
+    content: '';
+    position: absolute; left: 8px; top: 6px; bottom: 6px;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--accent), var(--border));
+    border-radius: 2px;
+  }
+  .tl-item { position: relative; margin-bottom: 20px; }
+  .tl-item::before {
+    content: '';
+    position: absolute;
+    left: -24px; top: 5px;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg);
+    box-shadow: 0 0 0 2px var(--accent);
+  }
+  .tl-item.milestone::before { background: #1a7a4a; box-shadow: 0 0 0 2px #1a7a4a; }
+  .tl-item.warning::before { background: var(--amber); box-shadow: 0 0 0 2px var(--amber); }
+  .tl-item.cancelled::before { background: var(--red); box-shadow: 0 0 0 2px var(--red); }
+  .tl-date {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 3px;
+  }
+  .tl-item.milestone .tl-date { color: #1a7a4a; }
+  .tl-item.warning .tl-date { color: var(--amber); }
+  .tl-item.cancelled .tl-date { color: var(--red); }
+  .tl-title { font-size: 14px; font-weight: 600; color: var(--ink); margin-bottom: 3px; }
+  .tl-body { font-size: 13px; color: var(--ink-light); line-height: 1.5; }
+
+  .proto-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  .proto-table th {
+    background: #0a2830;
+    color: #f0faf0;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding: 10px 14px;
+    text-align: left;
+  }
+  .proto-table th:first-child { border-radius: 8px 0 0 0; }
+  .proto-table th:last-child { border-radius: 0 8px 0 0; }
+  .proto-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--ink-light);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  .proto-table tr:last-child td { border-bottom: none; }
+  .proto-table tr:nth-child(even) td { background: #f0f8fb; }
+  .proto-table td strong { color: var(--ink); }
+
+  .status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+  }
+  .status-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .status-label {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .status-val { font-size: 13.5px; color: var(--ink); font-weight: 500; line-height: 1.4; }
+  .badge {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  .badge-amber { background: var(--amber-bg); color: var(--amber); }
+  .badge-green { background: var(--green-bg); color: var(--green); }
+  .badge-red { background: var(--red-bg); color: var(--red); }
+
+  /* Phase cards for physio plan */
+  .phases { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 12px; }
+  .phase-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .phase-header {
+    background: var(--accent);
+    color: white;
+    padding: 10px 16px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .phase-body { padding: 14px 16px; }
+  .phase-body li {
+    font-size: 13px;
+    color: var(--ink-light);
+    padding: 3px 0 3px 14px;
+    position: relative;
+    line-height: 1.45;
+  }
+  .phase-body li::before {
+    content: '·';
+    position: absolute; left: 2px;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .phase-body { list-style: none; }
+
+  .open-q {
+    background: var(--amber-bg);
+    border: 1px solid #f0d080;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 8px;
+    font-size: 13.5px;
+    color: var(--ink);
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    line-height: 1.5;
+  }
+  .open-q::before { content: '?'; font-weight: 700; color: var(--amber); flex-shrink: 0; }
+
+  .warning-box {
+    background: #fff8e8;
+    border: 1.5px solid #f0c060;
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 10px;
+    font-size: 13.5px;
+    color: #5a4010;
+    line-height: 1.5;
+  }
+  .warning-box strong { color: #3a2800; }
+
+  .footer {
+    text-align: center;
+    padding: 32px 24px;
+    font-size: 12px;
+    color: var(--ink-faint);
+    border-top: 1px solid var(--border);
+  }
+
+  @media (max-width: 600px) {
+    .header, .stats-row { padding-left: 20px; padding-right: 20px; }
+    .content { padding: 28px 16px 60px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-meta">Paws in Wayanad — Physio Briefing</div>
+  <h1>Lumbi</h1>
+  <div class="header-sub">Chat period: November 2025 – April 2026 &nbsp;·&nbsp; For physiotherapy team use only</div>
+</div>
+
+<div class="stats-row">
+  <div class="stat"><div class="stat-label">Sex</div><div class="stat-value">Female</div></div>
+  <div class="stat"><div class="stat-label">Age</div><div class="stat-value">Juvenile puppy</div></div>
+  <div class="stat"><div class="stat-label">Weight</div><div class="stat-value">~10.8 kg (Apr 2026)</div></div>
+  <div class="stat"><div class="stat-label">Primary Injury</div><div class="stat-value">Hip luxation</div></div>
+  <div class="stat"><div class="stat-label">Secondary</div><div class="stat-value">Achilles rupture</div></div>
+  <div class="stat"><div class="stat-label">Prognosis</div><div class="stat-value">Good if conservative managed</div></div>
+</div>
+
+<div class="content">
+
+  <!-- ASHRAM GUIDANCE -->
+  <div class="ashram-banner">
+    <div class="ashram-banner-title">From the Ashram / Clinical Guidance</div>
+    <div class="ashram-item">Tom (Achilles rest directive): "One more week of rest — that should be enough and could also check in about starting physio"</div>
+    <div class="ashram-item">Uma (bandage removal & PROM clearance): "Lumbi can be off the bandage now and light PROM can be started. Very light. Don't force at all."</div>
+    <div class="ashram-item">Uma (on video assessment): "Very hard to see it otherwise" — emphasis on importance of correct positioning in video updates for remote evaluation.</div>
+  </div>
+
+  <!-- DIAGNOSIS -->
+  <div class="section">
+    <div class="section-title"><span class="section-icon">🦴</span> Diagnosis & Injury History</div>
+    <div class="card">
+      <div class="card-title">Primary: Femoral head luxation</div>
+      <ul class="blist">
+        <li>Pre-Nov 8, 2025: Accident resulting in right hip injury (exact date unknown, but pre-arrival).</li>
+        <li><strong>Femoral head luxation (right hip)</strong> — confirmed on imaging.</li>
+        <li>Treatment: FHO (Femoral Head Ostectomy) surgery Nov 26, 2025 by Dr Rao.</li>
+        <li>Post-op: Femoral head successfully removed. Hip joint range of motion will rebuild through physio.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">Secondary: Partial Achilles tendon rupture</div>
+      <ul class="blist">
+        <li>Diagnosed Jan 24–25, 2026 (left hind leg).</li>
+        <li>Likely from injury trauma or overuse during FHO recovery period.</li>
+        <li>Conservative management: 4 weeks strict rest with hock flexion bandage. No surgery performed.</li>
+        <li>X-ray raised questions about hock joint positioning and Achilles status.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">Lab findings</div>
+      <ul class="blist">
+        <li>High WBC and low platelets on initial CBC (Nov 8) — infection/stress response, treated with Doxycycline 10 days.</li>
+        <li>Dr Ramesh questioned surgery timing due to delayed presentation and acute infection markers.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="section">
+    <div class="section-title"><span class="section-icon">📅</span> Key History & Recovery Timeline</div>
+    <div class="card">
+      <div class="timeline">
+
+        <div class="tl-item">
+          <div class="tl-date">Pre-Nov 8</div>
+          <div class="tl-title">Accident and injury</div>
+          <div class="tl-body">Right hip injury occurred at unknown date prior to arrival.</div>
+        </div>
+
+        <div class="tl-item milestone">
+          <div class="tl-date">Nov 8, 2025</div>
+          <div class="tl-title">Arrival at shelter</div>
+          <div class="tl-body">Weight: 3.2 kg. CBC performed: high WBC, low platelets. Doxycycline treatment initiated (10 days).</div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-date">Nov 8–18</div>
+          <div class="tl-title">Antibiotic course</div>
+          <div class="tl-body">Doxycycline 10 days. Dr Ramesh assessed timing concerns given delayed presentation.</div>
+        </div>
+
+        <div class="tl-item milestone">
+          <div class="tl-date">Nov 26, 2025</div>
+          <div class="tl-title">FHO surgery by Dr Rao</div>
+          <div class="tl-body">Femoral head ostectomy performed. Femoral head removed successfully. CT/X-rays confirmed successful procedure.</div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-date">Post-op</div>
+          <div class="tl-title">Room rest (not cage) — bandage changes every 3 days</div>
+          <div class="tl-body">Risk of jumping and disrupting healing. Sutures removed Dec 6.</div>
+        </div>
+
+        <div class="tl-item warning">
+          <div class="tl-date">Jan 16, 2026</div>
+          <div class="tl-title">X-ray — hock positioning question</div>
+          <div class="tl-body">Imaging raised question about Achilles tendon status and hock joint alignment on FHO-side leg.</div>
+        </div>
+
+        <div class="tl-item warning">
+          <div class="tl-date">Jan 24–25, 2026</div>
+          <div class="tl-title">Partial Achilles tendon rupture diagnosed</div>
+          <div class="tl-body">Left hind leg. Conservative management begun: 4 weeks strict rest with hock bandage (figure-8 flexion style).</div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-date">Jan 25 onwards</div>
+          <div class="tl-title">Achilles conservative protocol</div>
+          <div class="tl-body">Meloxicam 0.75mg, Omega-3 500mg EPA+DHA ×8 weeks, Vitamin E 100IU ×6 weeks. Hock bandage strict flexion. No jumping/running.</div>
+        </div>
+
+        <div class="tl-item milestone">
+          <div class="tl-date">Feb onwards</div>
+          <div class="tl-title">Uma approves light PROM</div>
+          <div class="tl-body">After 4-week rest period: Uma clearance for very light PROM. "Don't force at all."</div>
+        </div>
+
+        <div class="tl-item milestone">
+          <div class="tl-date">Feb 28+</div>
+          <div class="tl-title">Achilles rest complete — PROM can begin</div>
+          <div class="tl-body">4 weeks strict rest done. Light PROM approved per Uma.</div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-date">Apr 2026</div>
+          <div class="tl-title">Ongoing recovery</div>
+          <div class="tl-body">Weight: 10.8 kg (Apr 19). Continuing dual recovery: FHO hip and Achilles tendon.</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- PHYSIO PLAN -->
+  <div class="section">
+    <div class="section-title"><span class="section-icon">📋</span> Prescribed Physio Plan</div>
+
+    <div class="phases">
+      <div class="phase-card">
+        <div class="phase-header">Phase 1 — Post-FHO (Dec 1+)</div>
+        <ul class="phase-body">
+          <li>Room rest (no cage)</li>
+          <li>Assisted standing 5–10 min daily</li>
+          <li>Laser therapy alternate days</li>
+          <li>Gentle PROM from Day 14+</li>
+        </ul>
+      </div>
+      <div class="phase-card">
+        <div class="phase-header">Phase 2 — Achilles Rest (Jan 25+)</div>
+        <ul class="phase-body">
+          <li>STRICT REST: 4 weeks</li>
+          <li>Hock bandage: figure-8 flexion</li>
+          <li>Meloxicam + Omega-3 + Vitamin E</li>
+          <li>NO jumping or running</li>
+        </ul>
+      </div>
+      <div class="phase-card">
+        <div class="phase-header">Phase 3 — Light PROM (After 4-wk rest)</div>
+        <ul class="phase-body">
+          <li>Uma approved light PROM</li>
+          <li>Very gentle — no forced range</li>
+          <li>Stop at any resistance immediately</li>
+          <li>Assess for progression to walking</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card" style="padding:0;overflow:hidden;">
+      <table class="proto-table">
+        <thead>
+          <tr>
+            <th>Exercise / Protocol</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>FHO assisted standing</strong></td>
+            <td>5–10 min daily. Support hip. Laser therapy alternate days on hip site only.</td>
+          </tr>
+          <tr>
+            <td><strong>Achilles rest (hock bandage)</strong></td>
+            <td>4 weeks strict rest. Hock must stay flexed — figure-8 bandage style. No jumping or running. Change bandage every few days.</td>
+          </tr>
+          <tr>
+            <td><strong>Light PROM (Uma approved)</strong></td>
+            <td>Start only after Achilles 4-week rest period. Extremely light — no forced range. Stop immediately at any resistance. Perform on both legs gently.</td>
+          </tr>
+          <tr>
+            <td><strong>Laser therapy</strong></td>
+            <td>Alternate days on hip site. Note: laser does NOT penetrate deep enough for Achilles tendon healing — do not use laser specifically for Achilles.</td>
+          </tr>
+          <tr>
+            <td><strong>Short supervised walks</strong></td>
+            <td>Only during Achilles rest period completion; begin very slowly and gradually. Monitor for limping on left hind leg.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- CURRENT STATUS -->
+  <div class="section">
+    <div class="section-title"><span class="section-icon">📊</span> Current Status (April 2026)</div>
+    <div class="status-grid">
+      <div class="status-item">
+        <div class="status-label">Walking</div>
+        <div class="status-val"><span class="badge badge-amber">Limited</span><br><small style="color:var(--ink-faint);font-size:12px;">Short supervised walks during Achilles rest</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Standing</div>
+        <div class="status-val"><span class="badge badge-amber">With support</span><br><small style="color:var(--ink-faint);font-size:12px;">Assisted standing done; improving</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">FHO leg</div>
+        <div class="status-val"><span class="badge badge-green">Improving</span><br><small style="color:var(--ink-faint);font-size:12px;">Weight bearing progressing</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Achilles leg</div>
+        <div class="status-val"><span class="badge badge-amber">Protected</span><br><small style="color:var(--ink-faint);font-size:12px;">Requires bandage protection</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Pain Level</div>
+        <div class="status-val"><span class="badge badge-green">Minimal</span><br><small style="color:var(--ink-faint);font-size:12px;">Well-managed currently</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Appetite</div>
+        <div class="status-val"><span class="badge badge-green">Excellent</span><br><small style="color:var(--ink-faint);font-size:12px;">Eats all meals eagerly</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Mood</div>
+        <div class="status-val"><span class="badge badge-green">Very sweet</span><br><small style="color:var(--ink-faint);font-size:12px;">Energetic, loves face kisses</small></div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Activity level</div>
+        <div class="status-val"><span class="badge badge-red">Wants to run</span><br><small style="color:var(--ink-faint);font-size:12px;">Must enforce restriction</small></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KEY CONSIDERATIONS -->
+  <div class="section">
+    <div class="section-title"><span class="section-icon">⚠️</span> Key Considerations for Physio</div>
+
+    <div class="warning-box">
+      <strong>Critical restriction:</strong> Achilles rest is CRITICAL. Jumping or running risks complete rupture → surgical emergency. Strictly enforce movement restriction. She is very playful and eager to run — containment essential.
+    </div>
+
+    <div class="card">
+      <div class="card-title">Achilles tendon management</div>
+      <ul class="blist">
+        <li><strong>Hock bandage critical:</strong> Keep hock flexed, not extended. Figure-8 style. Change every few days.</li>
+        <li><strong>Laser does NOT reach Achilles depth</strong> — do not use laser specifically for tendon healing.</li>
+        <li>Conservative management is primary strategy — no surgery unless rupture becomes complete.</li>
+        <li>Monitor for signs of worsening: increased swelling, heat, or dragging of paw.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">FHO hip recovery</div>
+      <ul class="blist">
+        <li>Assisted standing 5–10 min daily with support under hip region.</li>
+        <li>Hip ROM will improve gradually with light PROM and standing.</li>
+        <li>Avoid stairs and jumping — risk to both hip and Achilles.</li>
+        <li>Watch for outward drift of leg — guide inward during standing if possible.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Handling & lifting</div>
+      <ul class="blist">
+        <li>Can be carried; avoid applying pressure to Achilles leg (left hind).</li>
+        <li>Support hip region when lifting to avoid twisting.</li>
+        <li>Very playful — manage arousal during physio sessions to prevent jumping.</li>
+        <li>Food-motivated — use treats as positive reinforcement for standing and gentle PROM.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Activity restriction</div>
+      <ul class="blist">
+        <li>Very energetic and eager to run — strictly enforce movement limitation during Achilles rest.</li>
+        <li>No free play or off-leash activity.</li>
+        <li>Containment in pen or room during activity times to prevent sudden jumping.</li>
+        <li>Supervised movement only.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- OPEN QUESTIONS -->
+  <div class="section">
+    <div class="section-title"><span class="section-icon">💬</span> Open Questions</div>
+    <div class="open-q">Is the partial Achilles rupture healing adequately with conservative management at 3+ months post-diagnosis?</div>
+    <div class="open-q">Will the hock joint on the FHO side require future bracing or show hyperextension issues?</div>
+    <div class="open-q">When can Uma reassess to confirm readiness to transition from rest to full PROM and gentle walking?</div>
+    <div class="open-q">Exact expected timeline for return to normal activity post-Achilles recovery? (Est. another 4–6 weeks?)</div>
+    <div class="open-q">Should hydrotherapy (water cycling exercise) be considered to accelerate FHO hip recovery without stressing Achilles?</div>
+  </div>
+
+</div>
+
+<div class="footer">
+  Paws in Wayanad — Haven &nbsp;·&nbsp; Generated from WhatsApp group chat export &nbsp;·&nbsp; For internal physio team use
+</div>
+
+</body>
+</html>
