@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Haven — Physio Briefings</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f3ec;
+    --card: #fffdf8;
+    --ink: #1c1a16;
+    --ink-light: #5a5648;
+    --ink-faint: #9a9183;
+    --accent: #c45c1a;
+    --accent-soft: #f5e6d8;
+    --border: #e8e0d0;
+    --green: #2d6a4f;
+    --green-bg: #d8f3dc;
+    --amber: #b5830a;
+    --amber-bg: #fef9e7;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+  }
+
+  .logo {
+    font-size: 28px;
+    margin-bottom: 8px;
+  }
+
+  .org {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 600;
+    margin-bottom: 32px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 5vw, 42px);
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.15;
+    margin-bottom: 12px;
+    color: var(--ink);
+  }
+
+  .subtitle {
+    font-size: 14px;
+    color: var(--ink-faint);
+    text-align: center;
+    margin-bottom: 48px;
+    max-width: 400px;
+  }
+
+  .selector-wrap {
+    width: 100%;
+    max-width: 480px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 4px 32px rgba(28,26,22,0.1);
+    margin-bottom: 24px;
+  }
+
+  .selector-label {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+
+  .select-wrap {
+    position: relative;
+    margin-bottom: 20px;
+  }
+
+  select {
+    width: 100%;
+    appearance: none;
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 44px 14px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--ink);
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  select:focus { border-color: var(--accent); }
+
+  .select-arrow {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: var(--ink-faint);
+    font-size: 12px;
+  }
+
+  .open-btn {
+    display: block;
+    width: 100%;
+    padding: 15px 24px;
+    background: var(--ink);
+    color: #fffdf8;
+    border: none;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    text-align: center;
+    letter-spacing: 0.02em;
+  }
+
+  .open-btn:hover { background: #2d2a24; }
+  .open-btn:active { transform: scale(0.98); }
+  .open-btn:disabled {
+    background: var(--border);
+    color: var(--ink-faint);
+    cursor: not-allowed;
+  }
+
+  /* Dog cards list */
+  .dog-list {
+    width: 100%;
+    max-width: 480px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .dog-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-decoration: none;
+    color: var(--ink);
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .dog-card:hover {
+    border-color: var(--accent);
+    box-shadow: 0 2px 12px rgba(196,92,26,0.12);
+  }
+
+  .dog-info { display: flex; flex-direction: column; }
+
+  .dog-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+
+  .dog-meta {
+    font-size: 12px;
+    color: var(--ink-faint);
+  }
+
+  .dog-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  .badge-active { background: var(--green-bg); color: var(--green); }
+  .badge-watch { background: var(--amber-bg); color: var(--amber); }
+
+  .arrow-icon {
+    color: var(--ink-faint);
+    font-size: 18px;
+    margin-left: 12px;
+  }
+
+  .divider {
+    width: 100%;
+    max-width: 480px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 8px 0 20px;
+    color: var(--ink-faint);
+    font-size: 12px;
+  }
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .footer {
+    margin-top: 48px;
+    font-size: 12px;
+    color: var(--ink-faint);
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<div class="logo">🐾</div>
+<div class="org">Paws in Wayanad — Haven</div>
+<h1>Physio Briefings</h1>
+<p class="subtitle">Select a dog to view their physiotherapy case file. For internal team use only.</p>
+
+<!-- QUICK SELECT -->
+<div class="selector-wrap">
+  <div class="selector-label">Quick open</div>
+  <div class="select-wrap">
+    <select id="dogSelect" onchange="updateBtn()">
+      <option value="">— Select a dog —</option>
+      <option value="mooben-physio-briefing.html">Mooben</option>
+      <option value="kanji-physio-briefing.html">Kanji</option>
+    </select>
+    <span class="select-arrow">▼</span>
+  </div>
+  <button class="open-btn" id="openBtn" onclick="openFile()" disabled>Open briefing</button>
+</div>
+
+<div class="divider">or browse all</div>
+
+<!-- DOG CARDS -->
+<div class="dog-list">
+
+  <a class="dog-card" href="mooben-physio-briefing.html">
+    <div class="dog-info">
+      <div class="dog-name">Mooben</div>
+      <div class="dog-meta">Male · 3–5 yrs · Spinal fracture + decompression surgery (Dec 2025)</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+      <span class="dog-badge badge-watch">Plateau</span>
+      <span class="arrow-icon">›</span>
+    </div>
+  </a>
+
+  <a class="dog-card" href="kanji-physio-briefing.html">
+    <div class="dog-info">
+      <div class="dog-name">Kanji</div>
+      <div class="dog-meta">Female · ~1 yr · Spinal luxation T10–T11 (Dec 2025) · No surgery</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+      <span class="dog-badge badge-active">Improving</span>
+      <span class="arrow-icon">›</span>
+    </div>
+  </a>
+
+</div>
+
+<div class="footer">
+  All files open locally — keep this folder together with the briefing files.<br>
+  Last updated: April 2026
+</div>
+
+<script>
+  function updateBtn() {
+    const sel = document.getElementById('dogSelect');
+    const btn = document.getElementById('openBtn');
+    btn.disabled = !sel.value;
+    btn.textContent = sel.value
+      ? 'Open ' + sel.options[sel.selectedIndex].text + '\'s briefing'
+      : 'Open briefing';
+  }
+
+  function openFile() {
+    const val = document.getElementById('dogSelect').value;
+    if (val) window.location.href = val;
+  }
+</script>
+
+</body>
+</html>
