@@ -101,8 +101,28 @@ Google Fonts: `Playfair Display` (headings) + `DM Sans` (body)
 
 All other contributors (Helis, Tieme, Elske, Anne, Rhea, Ava, Nick, etc.) are staff/volunteers — their observations and vet consultations are important but sit below Ashram guidance in authority.
 
+## Chat export naming convention
+Chat exports follow this naming pattern:
+```
+chat-exports/[DogName]_chat_YYYY-MM-DD.txt
+```
+Examples:
+```
+chat-exports/Tamu_chat_2026-05-20.txt
+chat-exports/Plumby_chat_2026-05-20.txt
+```
+The date is the export date. Using YYYY-MM-DD ensures files sort chronologically in Finder. When multiple exports exist for the same dog, always use the most recent one (latest date).
+
+## Weekly update workflow
+1. Export active chats from WhatsApp (only dogs where something happened that week)
+2. Drop the `.txt` files into `chat-exports/` following the naming convention above
+3. Tell Claude Code which dogs have new exports, e.g. "Tamu and Plumby have new chat exports, update their briefings"
+4. Claude Code reads the new chat file, compares with the existing HTML, and updates only what has changed
+5. Review changes by opening the HTML files directly in your browser (`open index.html`)
+6. When happy: `git add . && git commit -m "update briefings week of YYYY-MM-DD" && git push`
+
 ## How to update a briefing from a new chat export
-1. Chat exports live in `chat-exports/[DogName]_chat.txt`
+1. Find the latest export in `chat-exports/[DogName]_chat_YYYY-MM-DD.txt`
 2. Read the file (in chunks if large — files can be 1000+ lines)
 3. Extract only physio-relevant content: new diagnoses, protocol changes, Tom/Uma messages, status changes, key events
 4. Update the relevant sections: Ashram banner, Timeline, Current Status grid, Physio Protocol table, Open Questions
