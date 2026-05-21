@@ -11,7 +11,10 @@ haven-physio/
 ├── index.html                        # Landing page with dog cards + dropdown
 ├── [dogname]-physio-briefing.html    # One file per dog
 ├── CLAUDE.md                         # This file
-└── chat-exports/                     # WhatsApp .txt exports (local only, not in git)
+├── chat-exports/                     # WhatsApp .txt exports (local only, not in git)
+└── case-sheets/                      # Vet case sheets (local only, not in git)
+    ├── [dogname]_case_sheet_YYYY-MM-DD.md   # Text-only version for AI reading
+    └── [dogname]_case_sheet_YYYY-MM-DD.pdf  # Full PDF with scans and images
 ```
 
 ## Dogs with briefings
@@ -102,24 +105,47 @@ Google Fonts: `Playfair Display` (headings) + `DM Sans` (body)
 All other contributors (Helis, Tieme, Elske, Anne, Rhea, Ava, Nick, etc.) are staff/volunteers — their observations and vet consultations are important but sit below Ashram guidance in authority.
 
 ## Chat export naming convention
-Chat exports follow this naming pattern:
+There are two types of exports, distinguished by filename:
+
+**Original exports** — full chat history from day one, provided by someone who was in the group since the beginning. These are irreplaceable and must be kept permanently.
+```
+chat-exports/[DogName]_chat_original_YYYY-MM-DD.txt
+```
+
+**Regular exports** — exports made by the current user (Julian), covering only the period since he joined each group. These are added alongside originals, not in place of them.
 ```
 chat-exports/[DogName]_chat_YYYY-MM-DD.txt
 ```
+
 Examples:
 ```
-chat-exports/Tamu_chat_2026-05-20.txt
-chat-exports/Plumby_chat_2026-05-20.txt
+chat-exports/Tamu_chat_original_2026-04-23.txt   ← full history export (keep forever)
+chat-exports/Tamu_chat_2026-05-20.txt            ← Julian's export (latest wins)
 ```
-The date is the export date. Using YYYY-MM-DD ensures files sort chronologically in Finder. When multiple exports exist for the same dog, always use the most recent one (latest date).
+
+The date is the export date. Using YYYY-MM-DD ensures files sort chronologically in Finder. When updating a briefing, use **all available exports** for that dog — the original for early history, the most recent regular export for latest updates.
+
+**Retention rule:** Original exports are kept permanently. Regular exports — only the latest one per dog is needed; delete any older regular exports when a new one is added.
 
 ## Weekly update workflow
 1. Export active chats from WhatsApp (only dogs where something happened that week)
-2. Drop the `.txt` files into `chat-exports/` following the naming convention above
-3. Tell Claude Code which dogs have new exports, e.g. "Tamu and Plumby have new chat exports, update their briefings"
-4. Claude Code reads the new chat file, compares with the existing HTML, and updates only what has changed
-5. Review changes by opening the HTML files directly in your browser (`open index.html`)
-6. When happy: `git add . && git commit -m "update briefings week of YYYY-MM-DD" && git push`
+2. Drop the `.txt` files into `chat-exports/` using the regular naming convention: `[DogName]_chat_YYYY-MM-DD.txt`
+3. Do NOT delete or overwrite old exports — keep all of them. New exports sit alongside existing ones.
+4. Tell Claude which dogs have new exports, e.g. "Tamu and Plumby have new chat exports, update their briefings"
+5. Claude reads the new export (and the original if needed for early history), compares with the existing HTML, and updates only what has changed
+6. Review changes by opening the HTML files directly in your browser (`open index.html`)
+7. When happy: `git add . && git commit -m "update briefings week of YYYY-MM-DD" && git push`
+
+## Case sheets
+Some dogs have formal vet case sheets in `case-sheets/`. These contain structured medical history, diagnoses, treatment records, and scans — complementing the more informal chat exports.
+
+Two versions exist per dog:
+- **Markdown (`.md`)** — text-only version, optimised for AI reading. Always start here.
+- **PDF (`.pdf`)** — full document with images, X-ray scans, and attachments. Use as supporting documentation when the markdown version lacks visual context (e.g. you need to reference a specific scan or image).
+
+When updating a briefing, **check for a case sheet** for that dog and cross-reference it alongside the chat export. The case sheet may contain clinical detail (exact diagnoses, dosages, surgical notes) that isn't captured in the WhatsApp chats.
+
+Case sheets are dated on creation/update (e.g. `tamu_case_sheet_2026-05-21.md`). When a new version is added, the old one can be deleted — unlike chat exports, case sheets are cumulative documents, not incremental logs.
 
 ## How to update a briefing from a new chat export
 1. Find the latest export in `chat-exports/[DogName]_chat_YYYY-MM-DD.txt`
